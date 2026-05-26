@@ -1,0 +1,463 @@
+/* ===========================
+   Page 5: Live Monitoring
+   =========================== */
+
+body {
+    background-color: var(--bg-light-gray);
+    margin: 0;
+    padding: 0;
+}
+
+/* ===========================
+   Top Header Banner
+   =========================== */
+.monitoring-header {
+    background-color: var(--bg-white);
+    border-bottom: 1px solid var(--border-gray);
+    padding: 1.25rem 2rem;
+}
+
+.header-content {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.header-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.status-beacon {
+    color: #10b981;
+    font-size: 1rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.title-text {
+    color: var(--text-dark);
+}
+
+.patient-identifier {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+/* ===========================
+   Main Dashboard Container
+   =========================== */
+.monitoring-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 1.5rem;
+}
+
+/* ===========================
+   Left Column
+   =========================== */
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ECG Section */
+.ecg-section {
+    background-color: var(--bg-white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e8eef5;
+}
+
+.ecg-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.live-indicator {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #10b981;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.ecg-canvas {
+    background-color: #040d1a;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    min-height: 350px;
+}
+
+#ecgMonitoringWaveform {
+    width: 100%;
+    height: 350px;
+}
+
+/* ECG Controls */
+.ecg-controls {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.control-btn {
+    padding: 0.875rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-gray);
+}
+
+.control-btn-primary {
+    background-color: #10559d;
+    color: white;
+    border: none;
+}
+
+.control-btn-primary:hover {
+    background-color: #0d4580;
+    transform: translateY(-1px);
+}
+
+.control-btn-secondary {
+    background-color: white;
+    color: var(--text-dark);
+}
+
+.control-btn-secondary:hover {
+    background-color: #f8fafc;
+    border-color: var(--text-dark);
+}
+
+/* Vital Signs Section */
+.vitals-section {
+    background-color: var(--bg-white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e8eef5;
+}
+
+.vitals-section .section-title {
+    margin-bottom: 1.25rem;
+}
+
+.vitals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.vital-card {
+    background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+    border-radius: 8px;
+    padding: 1.25rem 1rem;
+    text-align: center;
+}
+
+.vital-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+    margin-bottom: 0.75rem;
+}
+
+.vital-value {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #0c4381;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.vital-unit {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* ===========================
+   Right Sidebar
+   =========================== */
+.right-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Connect Section */
+.connect-section {
+    background-color: var(--bg-white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e8eef5;
+}
+
+.connect-section .section-title {
+    margin-bottom: 1.25rem;
+}
+
+.connect-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+}
+
+.form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1dce6;
+    border-radius: 6px;
+    background-color: white;
+    color: #0c4381;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%230c4381' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1dce6;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #0c4381;
+    font-weight: 500;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.connect-btn {
+    width: 100%;
+    padding: 0.875rem;
+    background-color: #10559d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.connect-btn:hover {
+    background-color: #0d4580;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(16, 85, 157, 0.3);
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.action-btn {
+    padding: 0.75rem;
+    background-color: white;
+    color: var(--text-dark);
+    border: 1px solid var(--border-gray);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: #f8fafc;
+    border-color: var(--text-dark);
+}
+
+.action-btn-stop {
+    color: #dc2626;
+}
+
+.action-btn-stop:hover {
+    background-color: #fef2f2;
+    border-color: #dc2626;
+}
+
+/* Patient Info Section */
+.patient-info-section {
+    background-color: var(--bg-white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e8eef5;
+}
+
+.patient-info-section .section-title {
+    margin-bottom: 1.25rem;
+}
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.info-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.info-value-primary {
+    color: #0c4381;
+    font-weight: 600;
+}
+
+.info-value-danger {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+/* ===========================
+   Responsive Design
+   =========================== */
+@media (max-width: 1200px) {
+    .monitoring-container {
+        grid-template-columns: 1fr 340px;
+    }
+
+    .vitals-grid {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    }
+}
+
+@media (max-width: 992px) {
+    .monitoring-container {
+        grid-template-columns: 1fr;
+    }
+
+    .vitals-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .monitoring-header {
+        padding: 1rem;
+    }
+
+    .monitoring-container {
+        padding: 1rem;
+    }
+
+    .header-title {
+        font-size: 1.25rem;
+    }
+
+    .patient-identifier {
+        font-size: 0.9rem;
+    }
+
+    .ecg-controls {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .vitals-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #ecgMonitoringWaveform {
+        height: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-title {
+        font-size: 1.1rem;
+    }
+
+    .vitals-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .vital-value {
+        font-size: 2rem;
+    }
+
+    .action-buttons {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Monitoring - WETS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="monitoring.css">
+</head>
+<body>
+    <!-- Top Header Banner -->
+    <header class="monitoring-header">
+        <div class="header-content">
+            <h1 class="header-title">
+                <span class="status-beacon">●</span>
+                <span class="title-text">Live Monitoring</span>
+                <span class="patient-identifier">Patient: Osama Elnahas</span>
+            </h1>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Grid -->
+    <div class="monitoring-container">
+        <!-- Left Column -->
+        <div class="left-column">
+            <!-- ECG Waveform Section -->
+            <section class="ecg-section">
+                <div class="ecg-header">
+                    <h2 class="section-title">ECG WAVEFORM</h2>
+                    <span class="live-indicator">● LIVE</span>
+                </div>
+
+                <div class="ecg-canvas">
+                    <canvas id="ecgMonitoringWaveform"></canvas>
+                </div>
+
+                <div class="ecg-controls">
+                    <button class="control-btn control-btn-primary" onclick="plotECG()">Plot</button>
+                    <button class="control-btn control-btn-secondary" onclick="toggleUDP()">UDP</button>
+                    <button class="control-btn control-btn-secondary" onclick="turnOn()">ON</button>
+                    <button class="control-btn control-btn-secondary" onclick="turnOff()">OFF</button>
+                </div>
+            </section>
+
+            <!-- Vital Signs Section -->
+            <section class="vitals-section">
+                <h2 class="section-title">VITAL SIGNS</h2>
+                
+                <div class="vitals-grid">
+                    <div class="vital-card">
+                        <div class="vital-label">TEMPERATURE</div>
+                        <div class="vital-value">37.0</div>
+                        <div class="vital-unit">°C</div>
+                    </div>
+
+                    <div class="vital-card">
+                        <div class="vital-label">HEART RATE</div>
+                        <div class="vital-value">60</div>
+                        <div class="vital-unit">bpm</div>
+                    </div>
+
+                    <div class="vital-card">
+                        <div class="vital-label">SPO2</div>
+                        <div class="vital-value">95</div>
+                        <div class="vital-unit">%</div>
+                    </div>
+
+                    <div class="vital-card">
+                        <div class="vital-label">BLOOD PRESSURE</div>
+                        <div class="vital-value">107/61</div>
+                        <div class="vital-unit">mmHg</div>
+                    </div>
+
+                    <div class="vital-card">
+                        <div class="vital-label">RESPIRATION</div>
+                        <div class="vital-value">12</div>
+                        <div class="vital-unit">breaths/min</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <!-- Connect to Patient Module -->
+            <section class="connect-section">
+                <h2 class="section-title">CONNECT TO PATIENT</h2>
+                
+                <div class="connect-form">
+                    <div class="form-group">
+                        <label class="form-label">CONNECTION TYPE</label>
+                        <select class="form-select" id="connectionType">
+                            <option value="patientName">Patient Name</option>
+                            <option value="patientId">Patient ID</option>
+                            <option value="mrn">MRN Number</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">NAME</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="patientName" 
+                            value="Osama Elnahas"
+                        >
+                    </div>
+
+                    <button class="connect-btn" onclick="connectToPatient()">
+                        Connect
+                    </button>
+
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="saveConnection()">Save</button>
+                        <button class="action-btn" onclick="pauseConnection()">Pause</button>
+                        <button class="action-btn action-btn-stop" onclick="stopConnection()">Stop</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Patient Info Card -->
+            <section class="patient-info-section">
+                <h2 class="section-title">PATIENT INFO</h2>
+                
+                <div class="info-list">
+                    <div class="info-row">
+                        <span class="info-label">MRN</span>
+                        <span class="info-value info-value-primary">08050852601333</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Doctor</span>
+                        <span class="info-value info-value-primary">DR. Mohamed</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Department</span>
+                        <span class="info-value">Internists</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Blood Type</span>
+                        <span class="info-value info-value-danger">O-</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="monitoring.js"></script>
+</body>
+</html>

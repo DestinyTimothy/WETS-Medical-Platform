@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register New Patient - WETS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+    <div class="register-container">
+        <!-- Page Title Section -->
+        <header class="page-header">
+            <h1 class="page-title">Register New Patient</h1>
+            <p class="page-subtitle">Complete all fields to add a new patient record to the system</p>
+        </header>
+
+        <!-- Registration Form -->
+        <form id="registrationForm" class="registration-form">
+            
+            <!-- Section 1: Personal Information -->
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-icon">👤</span>
+                    <h2 class="section-title">PERSONAL INFORMATION</h2>
+                </div>
+
+                <div class="section-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">NATIONAL ID</label>
+                            <input type="text" class="form-input" value="08050852601333">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">FIRST NAME</label>
+                            <input type="text" class="form-input" value="Osama">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">LAST NAME</label>
+                            <input type="text" class="form-input" value="Elnahas">
+                        </div>
+
+                        <div class="form-group upload-group">
+                            <div class="upload-box" onclick="triggerFileUpload()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                                <span class="upload-text">Upload Photo</span>
+                            </div>
+                            <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">GENDER</label>
+                            <select class="form-select">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">MOBILE</label>
+                            <input type="tel" class="form-input" value="0201001069970">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">TELEPHONE</label>
+                            <input type="tel" class="form-input" value="088256479">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">EMAIL</label>
+                            <input type="email" class="form-input" placeholder="example@gmail.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">DEPARTMENT</label>
+                            <select class="form-select">
+                                <option value="internists">Internists</option>
+                                <option value="cardiac">Cardiac</option>
+                                <option value="orthopedics">Orthopedics</option>
+                                <option value="neurology">Neurology</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">MARITAL STATUS</label>
+                            <select class="form-select">
+                                <option value="single">Single</option>
+                                <option value="married">Married</option>
+                                <option value="divorced">Divorced</option>
+                                <option value="widowed">Widowed</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">BLOOD TYPE</label>
+                            <select class="form-select">
+                                <option value="o-">O-</option>
+                                <option value="o+">O+</option>
+                                <option value="a-">A-</option>
+                                <option value="a+">A+</option>
+                                <option value="b-">B-</option>
+                                <option value="b+">B+</option>
+                                <option value="ab-">AB-</option>
+                                <option value="ab+">AB+</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">DATE OF BIRTH</label>
+                            <input type="date" class="form-input" value="2013-09-11">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">DOCTOR</label>
+                            <select class="form-select">
+                                <option value="dr-mohamed">DR. Mohamed</option>
+                                <option value="dr-ahmed">DR. Ahmed</option>
+                                <option value="dr-sara">DR. Sara</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Address Information -->
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-icon">📍</span>
+                    <h2 class="section-title">ADDRESS INFORMATION</h2>
+                </div>
+
+                <div class="section-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">COUNTRY</label>
+                            <select class="form-select">
+                                <option value="egypt">Egypt</option>
+                                <option value="saudi">Saudi Arabia</option>
+                                <option value="uae">UAE</option>
+                                <option value="jordan">Jordan</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">GOVERNORATE</label>
+                            <input type="text" class="form-input" value="Assiut">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">CITY</label>
+                            <input type="text" class="form-input" value="Assiut">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">VILLAGE</label>
+                            <input type="text" class="form-input" value="Assiut">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">STREET</label>
+                            <input type="text" class="form-input" value="Takssem Elyosfe">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">NATIONALITY</label>
+                            <select class="form-select">
+                                <option value="egyptian">Egyptian</option>
+                                <option value="saudi">Saudi</option>
+                                <option value="emirati">Emirati</option>
+                                <option value="jordanian">Jordanian</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Patient Contact Person -->
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-icon">👥</span>
+                    <h2 class="section-title">PATIENT CONTACT PERSON</h2>
+                </div>
+
+                <div class="section-body">
+                    <div class="contact-row">
+                        <div class="form-group contact-type-group">
+                            <label class="form-label">CONTACT TYPE</label>
+                            <select class="form-select" id="contactType">
+                                <option value="fax">Fax</option>
+                                <option value="phone">Phone</option>
+                                <option value="email">Email</option>
+                                <option value="mobile">Mobile</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group contact-detail-group">
+                            <label class="form-label">CONTACT DETAIL</label>
+                            <input type="text" class="form-input" id="contactDetail" value="088256987">
+                        </div>
+
+                        <button type="button" class="add-contact-btn" onclick="addContact()">
+                            + Add
+                        </button>
+                    </div>
+
+                    <div id="contactList" class="contact-list"></div>
+                </div>
+            </section>
+
+            <!-- Action Footer -->
+            <div class="form-footer">
+                <button type="button" class="btn btn-cancel" onclick="navigateTo('index.html')">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-save">
+                    Save Patient
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="register.js"></script>
+</body>
+</html>

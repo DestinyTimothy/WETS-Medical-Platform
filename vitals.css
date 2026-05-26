@@ -1,0 +1,503 @@
+/* ===========================
+   Page 3: Vital Signs Dashboard
+   =========================== */
+
+body {
+    background-color: #f0f4f8;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===========================
+   Top Header Bar
+   =========================== */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background-color: var(--bg-white);
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.welcome-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.welcome-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0.25rem 0 0;
+}
+
+.system-metrics {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.metric-pill {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.metric-monitored {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.metric-emergency {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.metric-notifications {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+/* ===========================
+   Tab Navigation
+   =========================== */
+.tab-navigation {
+    display: flex;
+    gap: 2rem;
+    padding: 0 2rem;
+    background-color: var(--bg-white);
+    border-bottom: 2px solid var(--border-gray);
+    overflow-x: auto;
+}
+
+.tab-link {
+    padding: 1rem 0;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.tab-link:hover {
+    color: var(--text-dark);
+}
+
+.tab-link.active {
+    color: #0c4381;
+    border-bottom-color: #0c4381;
+}
+
+/* ===========================
+   Dashboard Container
+   =========================== */
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* ===========================
+   Left Sidebar
+   =========================== */
+.left-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.patient-card {
+    background-color: var(--bg-white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.patient-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background-color: #0c4381;
+    color: white;
+}
+
+.patient-avatar {
+    width: 56px;
+    height: 56px;
+    background-color: #3b82f6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+}
+
+.patient-info {
+    flex: 1;
+}
+
+.patient-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+}
+
+.patient-mrn {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.patient-details {
+    padding: 1.25rem 1.5rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.detail-value {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.status-active {
+    color: #059669;
+}
+
+.blood-type {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.dept-link {
+    color: #0c4381;
+}
+
+.doctor-name {
+    color: #0c4381;
+    font-weight: 600;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    padding: 0.875rem 1.25rem;
+    background-color: #e6f2ff;
+    color: #0c4381;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: #dbeafe;
+    transform: translateX(4px);
+}
+
+/* ===========================
+   Main Panel
+   =========================== */
+.main-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Vitals Section */
+.vitals-section {
+    background-color: var(--bg-white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin: 0 0 1.25rem;
+}
+
+.section-title::before {
+    content: '●';
+    color: #10b981;
+    margin-right: 0.5rem;
+}
+
+.vitals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.vital-card {
+    background-color: #fafbfc;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.vital-card:hover {
+    border-color: #e0e7ff;
+    background-color: #f8fafc;
+}
+
+.vital-active {
+    background-color: #eff6ff;
+    border-color: #3b82f6;
+}
+
+.vital-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+}
+
+.vital-value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #0c4381;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.vital-unit {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* ===========================
+   ECG Section
+   =========================== */
+.ecg-section {
+    background-color: var(--bg-white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.ecg-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.ecg-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.live-indicator {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #10b981;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.ecg-canvas {
+    background-color: #040d1a;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    min-height: 400px;
+    position: relative;
+}
+
+#ecgWaveform {
+    width: 100%;
+    height: 400px;
+}
+
+/* ECG Controls */
+.ecg-controls {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.ecg-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: 0.875rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-gray);
+}
+
+.ecg-btn-load {
+    background-color: #10559d;
+    color: white;
+    border: none;
+}
+
+.ecg-btn-load:hover {
+    background-color: #0d4580;
+}
+
+.ecg-btn-save,
+.ecg-btn-pause,
+.ecg-btn-udp,
+.ecg-btn-connect {
+    background-color: white;
+    color: var(--text-dark);
+}
+
+.ecg-btn-save:hover,
+.ecg-btn-pause:hover,
+.ecg-btn-udp:hover,
+.ecg-btn-connect:hover {
+    background-color: #f8fafc;
+    border-color: var(--text-dark);
+}
+
+.ecg-btn-stop {
+    background-color: white;
+    color: #dc2626;
+    border-color: #fca5a5;
+}
+
+.ecg-btn-stop:hover {
+    background-color: #fef2f2;
+    border-color: #dc2626;
+}
+
+/* ===========================
+   Responsive Design
+   =========================== */
+@media (max-width: 1200px) {
+    .dashboard-container {
+        grid-template-columns: 280px 1fr;
+    }
+
+    .vitals-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+    }
+
+    .system-metrics {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .metric-pill {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    .vitals-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+    .vital-value {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .tab-navigation {
+        padding: 0 1rem;
+        gap: 1rem;
+    }
+
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .welcome-text {
+        font-size: 1.25rem;
+    }
+
+    .ecg-controls {
+        flex-direction: column;
+    }
+
+    .ecg-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .vitals-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tab-link {
+        font-size: 0.85rem;
+    }
+
+    #ecgWaveform {
+        height: 300px;
+    }
+}
