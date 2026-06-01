@@ -1,16 +1,30 @@
-/* ===========================
-   Page 5: Live Monitoring
-   =========================== */
+/* ==========================================================================
+   WETS - Live Monitoring Workspace (Refactored Production Sheet)
+   ========================================================================== */
 
-body {
-    background-color: var(--bg-light-gray);
-    margin: 0;
-    padding: 0;
+:root {
+    --bg-white: #ffffff;
+    --border-gray: #e2e8f0;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --accent-blue: #0c4381;
+    --clinical-green: #10b981;
+    --clinical-red: #dc2626;
+    --bg-main: #f4f7fa;
 }
 
-/* ===========================
-   Top Header Banner
-   =========================== */
+body {
+    background-color: var(--bg-main);
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   Top Header Banner Architecture
+   ========================================================================== */
 .monitoring-header {
     background-color: var(--bg-white);
     border-bottom: 1px solid var(--border-gray);
@@ -33,14 +47,14 @@ body {
 }
 
 .status-beacon {
-    color: #10b981;
-    font-size: 1rem;
-    animation: pulse 2s ease-in-out infinite;
+    color: var(--clinical-green);
+    font-size: 0.9rem;
+    animation: beaconPulse 2s ease-in-out infinite;
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+@keyframes beaconPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.9); }
 }
 
 .title-text {
@@ -50,48 +64,54 @@ body {
 .patient-identifier {
     color: var(--text-muted);
     font-size: 1rem;
-    font-weight: 400;
+    font-weight: 500;
+    background-color: var(--bg-main);
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-gray);
 }
 
-/* ===========================
-   Main Dashboard Container
-   =========================== */
+/* ==========================================================================
+   Main Dashboard Container & Split Columns Layout
+   ========================================================================== */
 .monitoring-container {
     max-width: 1600px;
     margin: 0 auto;
     padding: 1.5rem 2rem;
     display: grid;
-    grid-template-columns: 1fr 380px;
+    grid-template-columns: minmax(0, 1fr) 380px;
     gap: 1.5rem;
+    box-sizing: border-box;
 }
 
-/* ===========================
-   Left Column
-   =========================== */
+/* Left Workspace Column */
 .left-column {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    min-width: 0; /* Prevents canvas stretching layouts breaking the container */
 }
 
-/* ECG Section */
+/* ==========================================================================
+   ECG Telemetry Screen Section
+   ========================================================================== */
 .ecg-section {
     background-color: var(--bg-white);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e8eef5;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-gray);
 }
 
 .ecg-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
 }
 
 .section-title {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 700;
     color: var(--text-muted);
     letter-spacing: 0.5px;
@@ -99,26 +119,29 @@ body {
 }
 
 .live-indicator {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    color: #10b981;
-    animation: pulse 2s ease-in-out infinite;
+    color: var(--clinical-green);
+    letter-spacing: 0.5px;
 }
 
+/* Native Grid Matrix Context Box */
 .ecg-canvas {
     background-color: #040d1a;
     border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    min-height: 350px;
+    padding: 0.5rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
 }
 
 #ecgMonitoringWaveform {
     width: 100%;
     height: 350px;
+    display: block;
 }
 
-/* ECG Controls */
+/* Interface Bus Control Switches */
 .ecg-controls {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -126,13 +149,14 @@ body {
 }
 
 .control-btn {
-    padding: 0.875rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 500;
+    padding: 0.85rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease-in-out;
     border: 1px solid var(--border-gray);
+    text-align: center;
 }
 
 .control-btn-primary {
@@ -143,7 +167,6 @@ body {
 
 .control-btn-primary:hover {
     background-color: #0d4580;
-    transform: translateY(-1px);
 }
 
 .control-btn-secondary {
@@ -153,16 +176,18 @@ body {
 
 .control-btn-secondary:hover {
     background-color: #f8fafc;
-    border-color: var(--text-dark);
+    border-color: #94a3b8;
 }
 
-/* Vital Signs Section */
+/* ==========================================================================
+   Vital Signs Numerical Metrics Box
+   ========================================================================== */
 .vitals-section {
     background-color: var(--bg-white);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e8eef5;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-gray);
 }
 
 .vitals-section .section-title {
@@ -171,55 +196,62 @@ body {
 
 .vitals-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.85rem;
 }
 
 .vital-card {
-    background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
-    border-radius: 8px;
+    background-color: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
     padding: 1.25rem 1rem;
     text-align: center;
+    transition: all 0.2s ease;
+}
+
+.vital-card:hover {
+    border-color: #cbd5e1;
+    background-color: #f1f5f9;
 }
 
 .vital-label {
     font-size: 0.7rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-muted);
-    letter-spacing: 0.3px;
-    margin-bottom: 0.75rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
 }
 
 .vital-value {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
     font-weight: 700;
-    color: #0c4381;
+    color: var(--accent-blue);
     line-height: 1;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.15rem;
 }
 
 .vital-unit {
     font-size: 0.8rem;
     color: var(--text-muted);
-    font-weight: 500;
+    font-weight: 600;
 }
 
-/* ===========================
-   Right Sidebar
-   =========================== */
+/* ==========================================================================
+   Right Workspace Configuration Sidebar
+   ========================================================================== */
 .right-sidebar {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-/* Connect Section */
+/* Core Integration Connector Module */
 .connect-section {
     background-color: var(--bg-white);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e8eef5;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-gray);
 }
 
 .connect-section .section-title {
@@ -235,80 +267,73 @@ body {
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
 
 .form-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: var(--text-muted);
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
 }
 
 .form-select {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid #d1dce6;
+    border: 1px solid #cbd5e1;
     border-radius: 6px;
     background-color: white;
-    color: #0c4381;
+    color: var(--accent-blue);
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%230c4381' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 1rem center;
-    padding-right: 2.5rem;
-}
-
-.form-select:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-sizing: border-box;
 }
 
 .form-input {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid #d1dce6;
+    border: 1px solid #cbd5e1;
     border-radius: 6px;
     font-size: 0.9rem;
-    color: #0c4381;
-    font-weight: 500;
+    color: var(--accent-blue);
+    font-weight: 600;
+    box-sizing: border-box;
 }
 
-.form-input:focus {
+.form-select:focus, .form-input:focus {
     outline: none;
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .connect-btn {
     width: 100%;
-    padding: 0.875rem;
+    padding: 0.85rem;
     background-color: #10559d;
     color: white;
     border: none;
     border-radius: 6px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 0.5rem;
+    transition: all 0.2s ease;
+    margin-top: 0.25rem;
 }
 
 .connect-btn:hover {
     background-color: #0d4580;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(16, 85, 157, 0.3);
 }
 
 .action-buttons {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
 }
 
 .action-btn {
@@ -317,33 +342,35 @@ body {
     color: var(--text-dark);
     border: 1px solid var(--border-gray);
     border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: 0.8rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    text-align: center;
 }
 
 .action-btn:hover {
     background-color: #f8fafc;
-    border-color: var(--text-dark);
+    border-color: #94a3b8;
 }
 
 .action-btn-stop {
-    color: #dc2626;
+    color: var(--clinical-red);
+    border-color: #fca5a5;
 }
 
 .action-btn-stop:hover {
     background-color: #fef2f2;
-    border-color: #dc2626;
+    border-color: var(--clinical-red);
 }
 
-/* Patient Info Section */
+/* Patient Context Static Display Card */
 .patient-info-section {
     background-color: var(--bg-white);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e8eef5;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-gray);
 }
 
 .patient-info-section .section-title {
@@ -353,54 +380,49 @@ body {
 .info-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.25rem;
 }
 
 .info-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-gray);
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .info-row:last-child {
     border-bottom: none;
-    padding-bottom: 0;
 }
 
 .info-label {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
     font-weight: 500;
 }
 
 .info-value {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     color: var(--text-dark);
-    font-weight: 500;
-}
-
-.info-value-primary {
-    color: #0c4381;
     font-weight: 600;
 }
 
-.info-value-danger {
-    color: #dc2626;
-    font-weight: 700;
+.info-value-primary {
+    color: var(--accent-blue);
 }
 
-/* ===========================
-   Responsive Design
-   =========================== */
+/* Explicit red styling logic mapping to global token overrides */
+.info-value-danger {
+    color: var(--clinical-red);
+}
+
+/* ==========================================================================
+   Responsive Breakpoint Intersections System
+   ========================================================================== */
 @media (max-width: 1200px) {
     .monitoring-container {
-        grid-template-columns: 1fr 340px;
-    }
-
-    .vitals-grid {
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        grid-template-columns: minmax(0, 1fr) 320px;
+        padding: 1.5rem 1rem;
     }
 }
 
@@ -408,9 +430,10 @@ body {
     .monitoring-container {
         grid-template-columns: 1fr;
     }
-
-    .vitals-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    .right-sidebar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
     }
 }
 
@@ -418,45 +441,30 @@ body {
     .monitoring-header {
         padding: 1rem;
     }
-
     .monitoring-container {
         padding: 1rem;
     }
-
     .header-title {
         font-size: 1.25rem;
     }
-
-    .patient-identifier {
-        font-size: 0.9rem;
-    }
-
     .ecg-controls {
         grid-template-columns: repeat(2, 1fr);
     }
-
-    .vitals-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
     #ecgMonitoringWaveform {
         height: 280px;
     }
 }
 
 @media (max-width: 480px) {
-    .header-title {
-        font-size: 1.1rem;
+    .right-sidebar {
+        grid-template-columns: 1fr;
     }
-
+    .ecg-controls {
+        grid-template-columns: 1fr;
+    }
     .vitals-grid {
         grid-template-columns: 1fr;
     }
-
-    .vital-value {
-        font-size: 2rem;
-    }
-
     .action-buttons {
         grid-template-columns: 1fr;
     }

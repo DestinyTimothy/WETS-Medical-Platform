@@ -1,23 +1,40 @@
-/* ===========================
-   Page 3: Vital Signs Dashboard
-   =========================== */
+/* ==========================================================================
+   WETS - Vital Signs Dashboard (Responsive Production Sheet)
+   ========================================================================== */
 
-body {
-    background-color: #f0f4f8;
-    margin: 0;
-    padding: 0;
+:root {
+    --bg-white: #ffffff;
+    --border-gray: #e2e8f0;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --accent-blue: #0c4381;
+    --clinical-green: #10b981;
+    --clinical-red: #dc2626;
+    --bg-main: #f4f7fa;
 }
 
-/* ===========================
-   Top Header Bar
-   =========================== */
+body {
+    background-color: var(--bg-main);
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   Top Navigation & Header Architecture
+   ========================================================================== */
+
 .top-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 2rem;
+    padding: 1.25rem 2rem;
     background-color: var(--bg-white);
     border-bottom: 1px solid var(--border-gray);
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .welcome-section {
@@ -26,94 +43,90 @@ body {
 }
 
 .welcome-text {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 1.4rem;
+    font-weight: 700;
     color: var(--text-dark);
     margin: 0;
 }
 
 .welcome-subtitle {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
-    margin: 0.25rem 0 0;
+    margin: 0.2rem 0 0;
 }
 
 .system-metrics {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .metric-pill {
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.85rem;
     border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 700;
     letter-spacing: 0.3px;
 }
 
-.metric-monitored {
-    background-color: #d1fae5;
-    color: #065f46;
-}
+.metric-monitored { background-color: #d1fae5; color: #065f46; }
+.metric-emergency { background-color: #fee2e2; color: #991b1b; }
+.metric-notifications { background-color: #fef3c7; color: #92400e; }
 
-.metric-emergency {
-    background-color: #fee2e2;
-    color: #991b1b;
-}
-
-.metric-notifications {
-    background-color: #fef3c7;
-    color: #92400e;
-}
-
-/* ===========================
-   Tab Navigation
-   =========================== */
+/* Horizontal Tab Navigation */
 .tab-navigation {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     padding: 0 2rem;
     background-color: var(--bg-white);
-    border-bottom: 2px solid var(--border-gray);
+    border-bottom: 1px solid var(--border-gray);
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.tab-navigation::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for a clean UI matrix */
 }
 
 .tab-link {
     padding: 1rem 0;
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 0.9rem;
+    font-weight: 600;
     border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease-in-out;
     white-space: nowrap;
 }
 
-.tab-link:hover {
-    color: var(--text-dark);
+.tab-link:hover { 
+    color: var(--text-dark); 
 }
 
 .tab-link.active {
-    color: #0c4381;
-    border-bottom-color: #0c4381;
+    color: var(--accent-blue);
+    border-bottom-color: var(--accent-blue);
 }
 
-/* ===========================
-   Dashboard Container
-   =========================== */
+/* ==========================================================================
+   Dashboard Main Layout Structure
+   ========================================================================== */
+
 .dashboard-container {
     display: grid;
-    grid-template-columns: 320px 1fr;
+    grid-template-columns: 300px minmax(0, 1fr);
     gap: 1.5rem;
     padding: 1.5rem 2rem;
     max-width: 1600px;
     margin: 0 auto;
+    box-sizing: border-box;
 }
 
-/* ===========================
-   Left Sidebar
-   =========================== */
+/* ==========================================================================
+   Left Patient Demographics Sidebar
+   ========================================================================== */
+
 .left-sidebar {
     display: flex;
     flex-direction: column;
@@ -124,94 +137,80 @@ body {
     background-color: var(--bg-white);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-gray);
 }
 
 .patient-header {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 1.5rem;
-    background-color: #0c4381;
+    padding: 1.25rem;
+    background-color: var(--accent-blue);
     color: white;
 }
 
 .patient-avatar {
-    width: 56px;
-    height: 56px;
+    width: 48px;
+    height: 48px;
     background-color: #3b82f6;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 700;
-    color: white;
-}
-
-.patient-info {
-    flex: 1;
 }
 
 .patient-name {
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 0.15rem;
 }
 
 .patient-mrn {
-    font-size: 0.8rem;
-    opacity: 0.9;
+    font-size: 0.75rem;
+    opacity: 0.85;
     margin: 0;
 }
 
-.patient-details {
-    padding: 1.25rem 1.5rem;
+.patient-details { 
+    padding: 1rem 1.25rem; 
 }
 
 .detail-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border-gray);
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-.detail-row:last-child {
-    border-bottom: none;
+.detail-row:last-child { 
+    border-bottom: none; 
 }
 
-.detail-label {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    font-weight: 500;
+.detail-label { 
+    font-size: 0.85rem; 
+    color: var(--text-muted); 
+    font-weight: 500; 
 }
 
-.detail-value {
-    font-size: 0.9rem;
-    color: var(--text-dark);
-    font-weight: 500;
+.detail-value { 
+    font-size: 0.875rem; 
+    color: var(--text-dark); 
+    font-weight: 600; 
 }
 
-.status-active {
-    color: #059669;
+.status-active { 
+    color: #059669; 
 }
 
-.blood-type {
-    color: #dc2626;
-    font-weight: 700;
+.blood-type { 
+    color: var(--clinical-red); 
 }
 
-.dept-link {
-    color: #0c4381;
-}
-
-.doctor-name {
-    color: #0c4381;
-    font-weight: 600;
-}
-
-/* Action Buttons */
+/* Interaction Controls Grid */
 .action-buttons {
     display: flex;
     flex-direction: column;
@@ -219,72 +218,72 @@ body {
 }
 
 .action-btn {
-    padding: 0.875rem 1.25rem;
+    padding: 0.75rem 1rem;
     background-color: #e6f2ff;
-    color: #0c4381;
+    color: var(--accent-blue);
     border: none;
     border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.875rem;
+    font-weight: 600;
     cursor: pointer;
-    text-align: center;
-    transition: all 0.3s ease;
+    text-align: left;
+    transition: all 0.2s ease;
 }
 
 .action-btn:hover {
     background-color: #dbeafe;
-    transform: translateX(4px);
+    transform: translateX(3px);
 }
 
-/* ===========================
-   Main Panel
-   =========================== */
+/* ==========================================================================
+   Right Diagnostics Panel Architecture
+   ========================================================================== */
+
 .main-panel {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    min-width: 0; /* Clear grid constraints */
 }
 
-/* Vitals Section */
+/* Numerical Vital Matrix Block */
 .vitals-section {
     background-color: var(--bg-white);
     border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-gray);
 }
 
 .section-title {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 700;
     color: var(--text-muted);
     letter-spacing: 0.5px;
-    margin: 0 0 1.25rem;
-}
-
-.section-title::before {
-    content: '●';
-    color: #10b981;
-    margin-right: 0.5rem;
+    margin: 0 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .vitals-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem;
 }
 
 .vital-card {
-    background-color: #fafbfc;
-    border: 2px solid transparent;
-    border-radius: 12px;
-    padding: 1.5rem;
+    background-color: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem 1rem;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .vital-card:hover {
-    border-color: #e0e7ff;
-    background-color: #f8fafc;
+    border-color: #cbd5e1;
+    background-color: #f1f5f9;
 }
 
 .vital-active {
@@ -293,35 +292,37 @@ body {
 }
 
 .vital-label {
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 0.7rem;
+    font-weight: 700;
     color: var(--text-muted);
     letter-spacing: 0.5px;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
 }
 
 .vital-value {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
-    color: #0c4381;
+    color: var(--accent-blue);
     line-height: 1;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.15rem;
 }
 
-.vital-unit {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    font-weight: 500;
+.vital-unit { 
+    font-size: 0.8rem; 
+    color: var(--text-muted); 
+    font-weight: 600; 
 }
 
-/* ===========================
-   ECG Section
-   =========================== */
+/* ==========================================================================
+   ECG Waveform & Machine Learning Interface Block
+   ========================================================================== */
+
 .ecg-section {
     background-color: var(--bg-white);
     border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-gray);
 }
 
 .ecg-header {
@@ -332,7 +333,7 @@ body {
 }
 
 .ecg-title {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 700;
     color: var(--text-muted);
     letter-spacing: 0.5px;
@@ -340,164 +341,113 @@ body {
 }
 
 .live-indicator {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    color: #10b981;
+    color: var(--clinical-green);
     animation: pulse 2s ease-in-out infinite;
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+@keyframes pulse { 
+    0%, 100% { opacity: 1; } 
+    50% { opacity: 0.4; } 
 }
 
+/* Matrix Context Window Wrap */
 .ecg-canvas {
     background-color: #040d1a;
     border-radius: 8px;
-    padding: 1rem;
+    padding: 0.5rem;
     margin-bottom: 1rem;
-    min-height: 400px;
     position: relative;
+    overflow: hidden;
 }
 
 #ecgWaveform {
     width: 100%;
-    height: 400px;
+    height: 320px;
+    display: block;
 }
 
-/* ECG Controls */
+/* Deep Learning Module Visual Layer Placeholder */
+.ecg-canvas::after {
+    content: "INTELLIGENT PREDICTIVE ML ENGINE DISCONNECTED — STANDBY MODE";
+    position: absolute;
+    bottom: 1rem;
+    left: 1.5rem;
+    color: rgba(16, 185, 129, 0.35);
+    font-family: monospace;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    pointer-events: none;
+}
+
+/* Hardware Control Bus */
 .ecg-controls {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.5rem;
     flex-wrap: wrap;
 }
 
 .ecg-btn {
-    flex: 1;
-    min-width: 100px;
-    padding: 0.875rem 1.5rem;
+    flex: 1 1 100px;
+    padding: 0.75rem 1rem;
     border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     border: 1px solid var(--border-gray);
+    text-align: center;
 }
 
-.ecg-btn-load {
-    background-color: #10559d;
-    color: white;
-    border: none;
-}
+.ecg-btn-load { background-color: #10559d; color: white; border: none; }
+.ecg-btn-load:hover { background-color: #0d4580; }
+.ecg-btn-save, .ecg-btn-pause, .ecg-btn-udp, .ecg-btn-connect { background-color: white; color: var(--text-dark); }
+.ecg-btn-save:hover, .ecg-btn-pause:hover, .ecg-btn-udp:hover, .ecg-btn-connect:hover { background-color: #f8fafc; border-color: #94a3b8; }
+.ecg-btn-stop { background-color: white; color: var(--clinical-red); border-color: #fca5a5; }
+.ecg-btn-stop:hover { background-color: #fef2f2; border-color: var(--clinical-red); }
 
-.ecg-btn-load:hover {
-    background-color: #0d4580;
-}
+/* ==========================================================================
+   Fluid Breakpoint Intersections System
+   ========================================================================== */
 
-.ecg-btn-save,
-.ecg-btn-pause,
-.ecg-btn-udp,
-.ecg-btn-connect {
-    background-color: white;
-    color: var(--text-dark);
-}
-
-.ecg-btn-save:hover,
-.ecg-btn-pause:hover,
-.ecg-btn-udp:hover,
-.ecg-btn-connect:hover {
-    background-color: #f8fafc;
-    border-color: var(--text-dark);
-}
-
-.ecg-btn-stop {
-    background-color: white;
-    color: #dc2626;
-    border-color: #fca5a5;
-}
-
-.ecg-btn-stop:hover {
-    background-color: #fef2f2;
-    border-color: #dc2626;
-}
-
-/* ===========================
-   Responsive Design
-   =========================== */
-@media (max-width: 1200px) {
-    .dashboard-container {
-        grid-template-columns: 280px 1fr;
+@media (max-width: 1024px) {
+    .dashboard-container { 
+        grid-template-columns: 1fr; 
+        padding: 1.25rem 1rem; 
     }
-
-    .vitals-grid {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    .action-buttons { 
+        flex-direction: row; 
+        flex-wrap: wrap; 
     }
-}
-
-@media (max-width: 992px) {
-    .dashboard-container {
-        grid-template-columns: 1fr;
-    }
-
-    .system-metrics {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .metric-pill {
-        font-size: 0.75rem;
-        padding: 0.4rem 0.75rem;
-    }
-
-    .vitals-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    }
-
-    .vital-value {
-        font-size: 2.5rem;
+    .action-btn { 
+        flex: 1 1 200px; 
+        text-align: center; 
     }
 }
 
 @media (max-width: 768px) {
-    .top-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-        padding: 1rem;
+    .top-header { 
+        padding: 1rem; 
+        flex-direction: column; 
+        align-items: flex-start; 
     }
-
-    .tab-navigation {
-        padding: 0 1rem;
-        gap: 1rem;
+    .tab-navigation { 
+        padding: 0 1rem; 
     }
-
-    .dashboard-container {
-        padding: 1rem;
-    }
-
-    .welcome-text {
-        font-size: 1.25rem;
-    }
-
-    .ecg-controls {
-        flex-direction: column;
-    }
-
-    .ecg-btn {
-        width: 100%;
+    #ecgWaveform { 
+        height: 260px; 
     }
 }
 
 @media (max-width: 480px) {
-    .vitals-grid {
-        grid-template-columns: 1fr;
+    .vitals-grid { 
+        grid-template-columns: 1fr; 
     }
-
-    .tab-link {
-        font-size: 0.85rem;
+    .action-btn { 
+        flex: 1 1 100%; 
     }
-
-    #ecgWaveform {
-        height: 300px;
+    .ecg-btn { 
+        flex: 1 1 45%; 
     }
 }

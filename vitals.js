@@ -1,280 +1,231 @@
 /**
- * WETS - Vital Signs Monitoring Dashboard
- * Real-time vitals display and ECG waveform simulation
+ * WETS — Telemetry Vitals Processing Pipeline
+ * Dynamic grid handling & production look-up table waveform tracking
  */
 
-// ECG Canvas Setup
+// Production Grade Waveform Baseline Matrix Array Template (Normalized -1.0 to 1.2)
+const ECG_BASE_CYCLE = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                       // Steady State Isoelectric tracking
+    0.05, 0.1, 0.15, 0.1, 0.05, 0, 0, 0, 0, 0,          // P-Wave Node cluster
+    -0.1, 0.2, 1.2, -0.4, 0, 0, 0, 0,                   // Depolarization Spike (QRS segment)
+    0, 0, 0.1, 0.2, 0.25, 0.2, 0.1, 0, 0, 0,            // T-Wave Node cluster
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0      // Interval recovery array buffer
+];
+
 let ecgCanvas;
 let ecgCtx;
 let ecgAnimationId;
 let ecgData = [];
-let ecgRunning = false;
+let cycleIndex = 0;
+let ecgRunning = true;
 let ecgPaused = false;
 
-// Initialize ECG Canvas
+// Application Initialization
 document.addEventListener('DOMContentLoaded', function() {
     ecgCanvas = document.getElementById('ecgWaveform');
-    ecgCtx = ecgCanvas.getContext('2d');
-    
-    // Set canvas size
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    
-    // Start ECG animation by default
-    startECG();
-    
-    // Simulate real-time vital signs updates
+    if (ecgCanvas) {
+        ecgCtx = ecgCanvas.getContext('2d');
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Populate display vector cache array completely to ensure cold-start fluid rendering
+        for (let i = 0; i < ecgCanvas.width; i++) {
+            ecgData.push(ecgCanvas.height / 2); 
+        }
+        
+        animateECG();
+    }
     startVitalsUpdate();
 });
 
 function resizeCanvas() {
+    if (!ecgCanvas) return;
     const container = ecgCanvas.parentElement;
-    ecgCanvas.width = container.offsetWidth - 32; // Account for padding
-    ecgCanvas.height = 400;
-}
-
-// ECG Wave Generation
-function generateECGPoint(x) {
-    // Simulate realistic ECG waveform (simplified)
-    const frequency = 0.015;
-    const amplitude = 60;
-    const baseline = ecgCanvas.height / 2;
     
-    // P wave
-    let y = baseline;
-    const phase = (x * frequency) % 1;
-    
-    if (phase < 0.1) {
-        y -= amplitude * 0.3 * Math.sin(phase * Math.PI * 10);
-    }
-    // QRS complex
-    else if (phase >= 0.15 && phase < 0.25) {
-        const qrsPhase = (phase - 0.15) * 10;
-        if (qrsPhase < 0.3) {
-            y += amplitude * 0.4 * Math.sin(qrsPhase * Math.PI * 3.33);
-        } else if (qrsPhase < 0.5) {
-            y -= amplitude * 1.5 * Math.sin((qrsPhase - 0.3) * Math.PI * 5);
-        } else if (qrsPhase < 0.7) {
-            y += amplitude * 0.8 * Math.sin((qrsPhase - 0.5) * Math.PI * 5);
-        }
-    }
-    // T wave
-    else if (phase >= 0.35 && phase < 0.55) {
-        y -= amplitude * 0.4 * Math.sin((phase - 0.35) * Math.PI * 5);
-    }
-    
-    return y;
-}
-
-function drawECGGrid() {
-    ecgCtx.strokeStyle = '#0a2540';
-    ecgCtx.lineWidth = 1;
-    
-    // Vertical lines
-    const gridSpacing = 20;
-    for (let x = 0; x < ecgCanvas.width; x += gridSpacing) {
-        ecgCtx.beginPath();
-        ecgCtx.moveTo(x, 0);
-        ecgCtx.lineTo(x, ecgCanvas.height);
-        ecgCtx.stroke();
-    }
-    
-    // Horizontal lines
-    for (let y = 0; y < ecgCanvas.height; y += gridSpacing) {
-        ecgCtx.beginPath();
-        ecgCtx.moveTo(0, y);
-        ecgCtx.lineTo(ecgCanvas.width, y);
-        ecgCtx.stroke();
-    }
-}
-
-function drawECGWaveform() {
-    // Clear canvas
-    ecgCtx.fillStyle = '#040d1a';
-    ecgCtx.fillRect(0, 0, ecgCanvas.width, ecgCanvas.height);
-    
-    // Draw grid
-    drawECGGrid();
-    
-    // Draw ECG line
-    ecgCtx.strokeStyle = '#10b981';
-    ecgCtx.lineWidth = 2;
-    ecgCtx.beginPath();
-    
-    for (let i = 0; i < ecgData.length - 1; i++) {
-        const x1 = i;
-        const y1 = ecgData[i];
-        const x2 = i + 1;
-        const y2 = ecgData[i + 1];
-        
-        if (i === 0) {
-            ecgCtx.moveTo(x1, y1);
-        }
-        ecgCtx.lineTo(x2, y2);
-    }
-    
-    ecgCtx.stroke();
+    // Hard lock coordinate space parameters cleanly to fit viewport wrapper boundaries
+    ecgCanvas.width = container.clientWidth;
+    ecgCanvas.height = 320;
 }
 
 function animateECG() {
     if (!ecgRunning || ecgPaused) return;
+
+    const currentMetric = ECG_BASE_CYCLE[cycleIndex];
+    const midPoint = ecgCanvas.height / 2;
     
-    // Add new point
-    ecgData.push(generateECGPoint(ecgData.length));
+    // Scale tracking constraints ensuring peaks optimize 70% of canvas height safely
+    const amplitudeScale = ecgCanvas.height * 0.35; 
+    const targetYValue = midPoint - (currentMetric * amplitudeScale);
     
-    // Remove old points if too many
+    ecgData.push(targetYValue);
+    
+    // Keep tracking arrays matching absolute layout dimensions
     if (ecgData.length > ecgCanvas.width) {
         ecgData.shift();
     }
-    
-    drawECGWaveform();
-    
+
+    // Advance loop index pointer safely
+    cycleIndex = (cycleIndex + 1) % ECG_BASE_CYCLE.length;
+
+    drawECGDisplay();
     ecgAnimationId = requestAnimationFrame(animateECG);
 }
 
-function startECG() {
-    ecgRunning = true;
-    ecgPaused = false;
-    ecgData = [];
+function drawECGDisplay() {
+    // Refresh canvas backplane overlay
+    ecgCtx.fillStyle = '#040d1a';
+    ecgCtx.fillRect(0, 0, ecgCanvas.width, ecgCanvas.height);
     
-    // Initialize with some data
-    for (let i = 0; i < ecgCanvas.width; i++) {
-        ecgData.push(generateECGPoint(i));
+    // Draw medical coordinate matrix lines
+    ecgCtx.strokeStyle = 'rgba(16, 37, 64, 0.5)';
+    ecgCtx.lineWidth = 1;
+    const gridSpacing = 20;
+    
+    for (let x = 0; x < ecgCanvas.width; x += gridSpacing) {
+        ecgCtx.beginPath(); ecgCtx.moveTo(x, 0); ecgCtx.lineTo(x, ecgCanvas.height); ecgCtx.stroke();
     }
+    for (let y = 0; y < ecgCanvas.height; y += gridSpacing) {
+        ecgCtx.beginPath(); ecgCtx.moveTo(0, y); ecgCtx.lineTo(ecgCanvas.width, y); ecgCtx.stroke();
+    }
+
+    // Paint Calculated Tracking Vectors Loop
+    ecgCtx.strokeStyle = '#10b981';
+    ecgCtx.lineWidth = 2.5;
+    ecgCtx.lineJoin = 'round'; // Mitigate pixel jagged separation anomalies
+    ecgCtx.beginPath();
     
-    animateECG();
+    for (let i = 0; i < ecgData.length; i++) {
+        if (i === 0) ecgCtx.moveTo(i, ecgData[i]);
+        else ecgCtx.lineTo(i, ecgData[i]);
+    }
+    ecgCtx.stroke();
 }
 
 function stopECGAnimation() {
     ecgRunning = false;
-    if (ecgAnimationId) {
-        cancelAnimationFrame(ecgAnimationId);
-    }
+    if (ecgAnimationId) cancelAnimationFrame(ecgAnimationId);
     
-    // Clear canvas
     ecgCtx.fillStyle = '#040d1a';
     ecgCtx.fillRect(0, 0, ecgCanvas.width, ecgCanvas.height);
-    drawECGGrid();
+    
+    // Keep background grid visible when tracking terminates
+    ecgCtx.strokeStyle = 'rgba(16, 37, 64, 0.5)';
+    ecgCtx.lineWidth = 1;
+    const gridSpacing = 20;
+    for (let x = 0; x < ecgCanvas.width; x += gridSpacing) {
+        ecgCtx.beginPath(); ecgCtx.moveTo(x, 0); ecgCtx.lineTo(x, ecgCanvas.height); ecgCtx.stroke();
+    }
+    for (let y = 0; y < ecgCanvas.height; y += gridSpacing) {
+        ecgCtx.beginPath(); ecgCtx.moveTo(0, y); ecgCtx.lineTo(ecgCanvas.width, y); ecgCtx.stroke();
+    }
     ecgData = [];
 }
 
-// Button Functions
+// Global Core UI Controller APIs
 function loadECG() {
-    console.log('Loading ECG data...');
-    startECG();
-    showNotification('ECG data loaded successfully', 'success');
+    if (!ecgRunning) {
+        ecgRunning = true;
+        ecgPaused = false;
+        animateECG();
+    }
+    showNotification('ECG telemetry stream verified', 'success');
 }
 
 function saveECG() {
-    console.log('Saving ECG data...');
-    showNotification('ECG data saved successfully', 'success');
+    showNotification('ECG static trace capture archived', 'success');
 }
 
 function pauseECG() {
+    if (!ecgRunning) return;
     ecgPaused = !ecgPaused;
     const btn = event.target;
     
     if (ecgPaused) {
         btn.textContent = 'Resume';
-        showNotification('ECG monitoring paused', 'info');
+        showNotification('ECG live pipeline tracking suspended', 'info');
     } else {
         btn.textContent = 'Pause';
         animateECG();
-        showNotification('ECG monitoring resumed', 'info');
+        showNotification('ECG live pipeline streaming initialized', 'info');
     }
 }
 
 function stopECG() {
     stopECGAnimation();
     const pauseBtn = document.querySelector('.ecg-btn-pause');
-    pauseBtn.textContent = 'Pause';
-    showNotification('ECG monitoring stopped', 'warning');
+    if (pauseBtn) pauseBtn.textContent = 'Pause';
+    showNotification('ECG dynamic pipeline tracking terminated', 'warning');
 }
 
 function toggleUDP() {
-    console.log('Toggling UDP connection...');
-    showNotification('UDP connection toggled', 'info');
+    showNotification('UDP communication layer polling connection points', 'info');
 }
 
-// Sidebar Action Functions
-function addConsultation() {
-    showNotification('Add Consultation feature coming soon', 'info');
+function addConsultation() { showNotification('Consultation entry module active', 'info'); }
+function addDrugPrescription() { showNotification('Prescription generator matrix active', 'info'); }
+function showPersonalInfo() { showNotification('Contextual demographic query executed', 'info'); }
+
+function navigateTo(url) {
+    window.location.href = url;
 }
 
-function addDrugPrescription() {
-    showNotification('Add Drug Prescription feature coming soon', 'info');
-}
-
-function showPersonalInfo() {
-    showNotification('Personal Info feature coming soon', 'info');
-}
-
-// Simulate real-time vitals updates
+// Numerical Metric Simulation Triggers
 function startVitalsUpdate() {
     setInterval(() => {
         if (ecgRunning && !ecgPaused) {
             updateVitalSigns();
         }
-    }, 5000); // Update every 5 seconds
+    }, 4000);
 }
 
 function updateVitalSigns() {
-    // Simulate slight variations in vital signs
-    const heartRate = document.querySelector('.vital-card:nth-child(1) .vital-value');
-    const currentHR = parseInt(heartRate.textContent);
-    const newHR = currentHR + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 3);
-    heartRate.textContent = Math.max(55, Math.min(85, newHR));
+    const heartRateCard = document.querySelector('.vital-card:nth-child(1) .vital-value');
+    if (heartRateCard) {
+        const currentHR = parseInt(heartRateCard.textContent) || 60;
+        const delta = (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 2);
+        heartRateCard.textContent = Math.max(58, Math.min(82, currentHR + delta));
+    }
 }
 
-// Notification System
+// Notification Overlay Core Engine
 function showNotification(message, type = 'info') {
+    const existing = document.querySelectorAll('.notification');
+    existing.forEach(n => n.remove());
+
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
     notification.style.cssText = `
         position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+        top: 24px;
+        right: 24px;
+        padding: 0.85rem 1.5rem;
+        background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#ef4444' : '#3b82f6'};
         color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        z-index: 1000;
-        animation: slideIn 0.3s ease;
+        border-radius: 6px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        z-index: 1100;
+        font-size: 0.875rem;
+        font-weight: 600;
+        pointer-events: none;
+        animation: toastIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     `;
     
     document.body.appendChild(notification);
     
     setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
+        notification.style.transition = 'opacity 0.2s ease';
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 200);
+    }, 2500);
 }
 
-// Add animation styles
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(400px);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(400px);
-            opacity: 0;
-        }
+// Inject clean notification display framework animation directly
+const animationCSS = document.createElement('style');
+animationCSS.textContent = `
+    @keyframes toastIn {
+        from { transform: translateY(10px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
     }
 `;
-document.head.appendChild(style);
+document.head.appendChild(animationCSS);

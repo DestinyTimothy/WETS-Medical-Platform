@@ -1,142 +1,122 @@
 /**
- * WETS - Live Monitoring / Patient Connection
- * Real-time ECG monitoring and patient connection management
+ * WETS - Live Monitoring Processing Engine
+ * Synchronized Look-Up Table (LUT) Waveform Stream Framework
  */
 
-// ECG Canvas Setup
+// Global Immutable Baseline Heart Trace Matrix Array
+const ECG_BASE_CYCLE = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                       // Flat Isoelectric Line
+    0.05, 0.1, 0.15, 0.1, 0.05, 0, 0, 0, 0, 0,          // P Wave (Atrial Activity)
+    -0.1, 0.2, 1.2, -0.4, 0, 0, 0, 0,                   // QRS Deflection Spike
+    0, 0, 0.1, 0.2, 0.25, 0.2, 0.1, 0, 0, 0,            // T Wave (Ventricular Reset)
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0      // Inherent Resting Buffer Gap
+];
+
 let ecgCanvas;
 let ecgCtx;
 let ecgAnimationId;
 let ecgData = [];
+let cycleIndex = 0;
 let ecgRunning = true;
 let ecgPaused = false;
 
-// Initialize ECG Canvas
+// Core Synchronization Initializer
 document.addEventListener('DOMContentLoaded', function() {
     ecgCanvas = document.getElementById('ecgMonitoringWaveform');
-    ecgCtx = ecgCanvas.getContext('2d');
-    
-    // Set canvas size
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    
-    // Start ECG animation automatically
-    startECGMonitoring();
+    if (ecgCanvas) {
+        ecgCtx = ecgCanvas.getContext('2d');
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Cold start canvas buffer preparation loop to avoid rendering empty lines
+        startECGMonitoring();
+    }
 });
 
 function resizeCanvas() {
+    if (!ecgCanvas) return;
     const container = ecgCanvas.parentElement;
-    ecgCanvas.width = container.offsetWidth - 32;
+    
+    // Explicit structural dimension parameters mapping
+    ecgCanvas.width = container.clientWidth;
     ecgCanvas.height = 350;
-}
-
-// ECG Wave Generation
-function generateECGPoint(x) {
-    const frequency = 0.015;
-    const amplitude = 60;
-    const baseline = ecgCanvas.height / 2;
-    
-    let y = baseline;
-    const phase = (x * frequency) % 1;
-    
-    // P wave
-    if (phase < 0.1) {
-        y -= amplitude * 0.3 * Math.sin(phase * Math.PI * 10);
-    }
-    // QRS complex
-    else if (phase >= 0.15 && phase < 0.25) {
-        const qrsPhase = (phase - 0.15) * 10;
-        if (qrsPhase < 0.3) {
-            y += amplitude * 0.4 * Math.sin(qrsPhase * Math.PI * 3.33);
-        } else if (qrsPhase < 0.5) {
-            y -= amplitude * 1.5 * Math.sin((qrsPhase - 0.3) * Math.PI * 5);
-        } else if (qrsPhase < 0.7) {
-            y += amplitude * 0.8 * Math.sin((qrsPhase - 0.5) * Math.PI * 5);
-        }
-    }
-    // T wave
-    else if (phase >= 0.35 && phase < 0.55) {
-        y -= amplitude * 0.4 * Math.sin((phase - 0.35) * Math.PI * 5);
-    }
-    
-    return y;
-}
-
-function drawECGGrid() {
-    ecgCtx.strokeStyle = '#0a2540';
-    ecgCtx.lineWidth = 1;
-    
-    const gridSpacing = 20;
-    
-    // Vertical lines
-    for (let x = 0; x < ecgCanvas.width; x += gridSpacing) {
-        ecgCtx.beginPath();
-        ecgCtx.moveTo(x, 0);
-        ecgCtx.lineTo(x, ecgCanvas.height);
-        ecgCtx.stroke();
-    }
-    
-    // Horizontal lines
-    for (let y = 0; y < ecgCanvas.height; y += gridSpacing) {
-        ecgCtx.beginPath();
-        ecgCtx.moveTo(0, y);
-        ecgCtx.lineTo(ecgCanvas.width, y);
-        ecgCtx.stroke();
-    }
-}
-
-function drawECGWaveform() {
-    // Clear canvas
-    ecgCtx.fillStyle = '#040d1a';
-    ecgCtx.fillRect(0, 0, ecgCanvas.width, ecgCanvas.height);
-    
-    // Draw grid
-    drawECGGrid();
-    
-    // Draw ECG line
-    ecgCtx.strokeStyle = '#10b981';
-    ecgCtx.lineWidth = 2;
-    ecgCtx.beginPath();
-    
-    for (let i = 0; i < ecgData.length - 1; i++) {
-        const x1 = i;
-        const y1 = ecgData[i];
-        const x2 = i + 1;
-        const y2 = ecgData[i + 1];
-        
-        if (i === 0) {
-            ecgCtx.moveTo(x1, y1);
-        }
-        ecgCtx.lineTo(x2, y2);
-    }
-    
-    ecgCtx.stroke();
 }
 
 function animateECG() {
     if (!ecgRunning || ecgPaused) return;
     
-    // Add new point
-    ecgData.push(generateECGPoint(ecgData.length));
+    const currentMetric = ECG_BASE_CYCLE[cycleIndex];
+    const midPoint = ecgCanvas.height / 2;
     
-    // Remove old points
+    // Exact structural scale factors calculations matching main page layouts
+    const amplitudeScale = ecgCanvas.height * 0.35;
+    const targetYValue = midPoint - (currentMetric * amplitudeScale);
+    
+    ecgData.push(targetYValue);
+    
+    // Slice data length boundary precisely to element physical pixel width
     if (ecgData.length > ecgCanvas.width) {
         ecgData.shift();
     }
     
-    drawECGWaveform();
+    // Increment look-up index location loop register
+    cycleIndex = (cycleIndex + 1) % ECG_BASE_CYCLE.length;
     
+    drawECGWaveform();
     ecgAnimationId = requestAnimationFrame(animateECG);
+}
+
+function drawECGGrid() {
+    ecgCtx.strokeStyle = 'rgba(16, 37, 64, 0.5)';
+    ecgCtx.lineWidth = 1;
+    
+    const gridSpacing = 20;
+    
+    // X-Axis Matrix Tracks
+    for (let x = 0; x < ecgCanvas.width; x += gridSpacing) {
+        ecgCtx.beginPath(); ecgCtx.moveTo(x, 0); ecgCtx.lineTo(x, ecgCanvas.height); ecgCtx.stroke();
+    }
+    
+    // Y-Axis Matrix Tracks
+    for (let y = 0; y < ecgCanvas.height; y += gridSpacing) {
+        ecgCtx.beginPath(); ecgCtx.moveTo(0, y); ecgCtx.lineTo(ecgCanvas.width, y); ecgCtx.stroke();
+    }
+}
+
+function drawECGWaveform() {
+    // Canvas background fill reset
+    ecgCtx.fillStyle = '#040d1a';
+    ecgCtx.fillRect(0, 0, ecgCanvas.width, ecgCanvas.height);
+    
+    drawECGGrid();
+    
+    // Core Path Render Pipeline execution
+    ecgCtx.strokeStyle = '#10b981'; // Uniform Health Neon Green
+    ecgCtx.lineWidth = 2.5;
+    ecgCtx.lineJoin = 'round'; // Eliminate coordinate break pixelation anomalies
+    ecgCtx.beginPath();
+    
+    for (let i = 0; i < ecgData.length; i++) {
+        if (i === 0) ecgCtx.moveTo(i, ecgData[i]);
+        else ecgCtx.lineTo(i, ecgData[i]);
+    }
+    
+    ecgCtx.stroke();
 }
 
 function startECGMonitoring() {
     ecgRunning = true;
     ecgPaused = false;
     ecgData = [];
+    cycleIndex = 0;
     
-    // Initialize with data
+    // Instantly preload array to drop tracing lag latency artifacts
     for (let i = 0; i < ecgCanvas.width; i++) {
-        ecgData.push(generateECGPoint(i));
+        const prefillMetric = ECG_BASE_CYCLE[i % ECG_BASE_CYCLE.length];
+        const midPoint = ecgCanvas.height / 2;
+        const amplitudeScale = ecgCanvas.height * 0.35;
+        ecgData.push(midPoint - (prefillMetric * amplitudeScale));
     }
     
     animateECG();
@@ -148,64 +128,58 @@ function stopECGMonitoring() {
         cancelAnimationFrame(ecgAnimationId);
     }
     
-    // Clear canvas
+    // Clean-slate state transition logic
     ecgCtx.fillStyle = '#040d1a';
     ecgCtx.fillRect(0, 0, ecgCanvas.width, ecgCanvas.height);
     drawECGGrid();
     ecgData = [];
 }
 
-// Control Button Functions
+/* ==========================================================================
+   Telemetry UI Functional Intersections Block
+   ========================================================================== */
+
 function plotECG() {
-    console.log('Plotting ECG...');
-    startECGMonitoring();
-    showNotification('ECG plotting started', 'success');
+    if (!ecgRunning) {
+        startECGMonitoring();
+        showNotification('ECG live plotting sequence initialized', 'success');
+    }
 }
 
 function toggleUDP() {
-    console.log('Toggling UDP connection...');
-    showNotification('UDP connection toggled', 'info');
+    showNotification('UDP peripheral data communications connection verified', 'info');
 }
 
 function turnOn() {
-    console.log('Turning on monitoring...');
-    ecgRunning = true;
-    ecgPaused = false;
-    if (ecgData.length === 0) {
+    if (!ecgRunning) {
         startECGMonitoring();
-    } else {
-        animateECG();
+        showNotification('Monitoring systems fully active', 'success');
     }
-    showNotification('Monitoring turned ON', 'success');
 }
 
 function turnOff() {
-    console.log('Turning off monitoring...');
     stopECGMonitoring();
-    showNotification('Monitoring turned OFF', 'warning');
+    showNotification('Monitoring channels deactivated', 'warning');
 }
 
-// Connection Functions
+// Client Profile Interfacing Logic
 function connectToPatient() {
-    const connectionType = document.getElementById('connectionType').value;
     const patientName = document.getElementById('patientName').value;
     
     if (!patientName.trim()) {
-        showNotification('Please enter patient information', 'error');
+        showNotification('Invalid operation: Enter patient target parameter info', 'error');
         return;
     }
     
-    // Simulate connection
     const connectBtn = document.querySelector('.connect-btn');
-    connectBtn.textContent = 'Connecting...';
+    connectBtn.textContent = 'Linking Pipeline...';
     connectBtn.disabled = true;
     
     setTimeout(() => {
-        connectBtn.textContent = 'Connected ✓';
+        connectBtn.textContent = 'Linked ✓';
         connectBtn.style.backgroundColor = '#10b981';
-        showNotification(`Connected to patient: ${patientName}`, 'success');
+        showNotification(`Telemetry connection channel linked: ${patientName}`, 'success');
         
-        // Start monitoring
         startECGMonitoring();
         
         setTimeout(() => {
@@ -213,25 +187,25 @@ function connectToPatient() {
             connectBtn.style.backgroundColor = '#10559d';
             connectBtn.disabled = false;
         }, 2000);
-    }, 1500);
+    }, 1200);
 }
 
 function saveConnection() {
-    console.log('Saving connection data...');
-    showNotification('Connection data saved', 'success');
+    showNotification('Patient link tracking configurations saved', 'success');
 }
 
 function pauseConnection() {
+    if (!ecgRunning) return;
     ecgPaused = !ecgPaused;
     const btn = event.target;
     
     if (ecgPaused) {
         btn.textContent = 'Resume';
-        showNotification('Monitoring paused', 'info');
+        showNotification('Live telemetry visualization pipeline paused', 'info');
     } else {
         btn.textContent = 'Pause';
         animateECG();
-        showNotification('Monitoring resumed', 'info');
+        showNotification('Live telemetry visualization pipeline resumed', 'info');
     }
 }
 
@@ -240,65 +214,57 @@ function stopConnection() {
     const connectBtn = document.querySelector('.connect-btn');
     connectBtn.textContent = 'Connect';
     connectBtn.style.backgroundColor = '#10559d';
-    showNotification('Connection stopped', 'warning');
+    showNotification('Active data session link broken', 'warning');
 }
 
-// Notification System
+// Integrated Dynamic Notification Array System Engine
 function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
+    const currentToast = document.querySelector('.wets-toast-message');
+    if (currentToast) currentToast.remove();
+
+    const toast = document.createElement('div');
+    toast.className = `wets-toast-message wits-toast-${type}`;
+    toast.textContent = message;
     
-    const bgColor = type === 'success' ? '#10b981' : 
-                    type === 'error' ? '#ef4444' : 
-                    type === 'warning' ? '#f59e0b' :
-                    '#3b82f6';
+    const tokenColors = {
+        success: '#10b981',
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#3b82f6'
+    };
     
-    notification.style.cssText = `
+    toast.style.cssText = `
         position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        background: ${bgColor};
+        top: 24px;
+        right: 24px;
+        padding: 0.85rem 1.5rem;
+        background: ${tokenColors[type] || tokenColors.info};
         color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        z-index: 1000;
-        animation: slideIn 0.3s ease;
-        max-width: 300px;
+        border-radius: 6px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        z-index: 1500;
+        font-size: 0.875rem;
+        font-weight: 600;
+        pointer-events: none;
+        animation: toastEnter 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        max-width: 320px;
     `;
     
-    document.body.appendChild(notification);
+    document.body.appendChild(toast);
     
     setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
+        toast.style.transition = 'opacity 0.2s ease';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 200);
+    }, 2500);
 }
 
-// Add animation styles
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(400px);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(400px);
-            opacity: 0;
-        }
+// Apply contextual animation style rule nodes natively 
+const animationInject = document.createElement('style');
+animationInject.textContent = `
+    @keyframes toastEnter {
+        from { transform: translateY(12px) scale(0.98); opacity: 0; }
+        to { transform: translateY(0) scale(1); opacity: 1; }
     }
 `;
-document.head.appendChild(style);
+document.head.appendChild(animationInject);

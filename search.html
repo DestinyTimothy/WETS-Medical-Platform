@@ -9,41 +9,42 @@
 </head>
 <body>
     <div class="page-container">
-        <!-- Page Header -->
         <header class="page-header">
             <h1 class="page-title">Patient Search</h1>
             <p class="page-subtitle">Search by name, ID, or department to find patient records</p>
         </header>
 
-        <!-- Advanced Search Panel -->
         <div class="search-panel">
             <div class="search-controls">
-                <div class="search-field-group">
-                    <select class="search-field-selector" id="searchField">
-                        <option value="name">Name</option>
-                        <option value="id">ID</option>
-                        <option value="department">Department</option>
-                    </select>
+                <div class="query-block">
+                    <div class="search-field-group">
+                        <select class="search-field-selector" id="searchField">
+                            <option value="name">Name</option>
+                            <option value="id">ID</option>
+                            <option value="department">Department</option>
+                        </select>
+                    </div>
+
+                    <div class="search-input-group">
+                        <span class="search-icon"></span>
+                        <input 
+                            type="text" 
+                            class="search-input" 
+                            id="searchInput" 
+                            value="ahmed"
+                            placeholder="Enter search term..."
+                        >
+                    </div>
+                    <button type="button" class="btn btn-search" onclick="performSearch()">Search</button>
                 </div>
 
-                <div class="search-input-group">
-                    <span class="search-icon">🔍</span>
-                    <input 
-                        type="text" 
-                        class="search-input" 
-                        id="searchInput" 
-                        value="ahmed"
-                        placeholder="Enter search term..."
-                    >
+                <div class="actions-block">
+                    <button type="button" class="btn btn-new-patient" onclick="window.location.href='register.html'">+ New Patient</button>
+                    <button type="button" class="btn btn-exit" onclick="window.location.href='index.html'">Exit</button>
                 </div>
-
-                <button class="btn btn-search" onclick="performSearch()">Search</button>
-                <button class="btn btn-new-patient" onclick="navigateTo('register.html')">+ New Patient</button>
-                <button class="btn btn-exit" onclick="navigateTo('index.html')">Exit</button>
             </div>
         </div>
 
-        <!-- Results Table -->
         <div class="results-container">
             <div class="results-header">
                 <h2 class="results-title">PATIENTS FOUND</h2>
@@ -64,7 +65,7 @@
                         <tr class="table-row selected" data-patient-id="222" onclick="selectRow(this)">
                             <td>222</td>
                             <td>38</td>
-                            <td>Mahmoud Maher</td>
+                            <td><strong>Mahmoud Maher</strong></td>
                             <td><span class="dept-tag dept-cardiac">Cardiac</span></td>
                         </tr>
                         <tr class="table-row" data-patient-id="223" onclick="selectRow(this)">
@@ -101,15 +102,14 @@
                 </table>
             </div>
 
-            <!-- Action Footer -->
             <div class="action-footer">
-                <button class="btn btn-delete" onclick="deleteSelected()">Delete Selected</button>
-                <button class="btn btn-view-patient" onclick="navigateTo('vitals.html')">View Patient</button>
+                <button type="button" class="btn btn-delete" onclick="deleteSelected()">Delete Selected</button>
+                <button type="button" class="btn btn-view-patient" onclick="window.location.href='vitals.html'">View Patient</button>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
-    <script src="search.js"></script>
+    <script src="search.js"></script>   
 </body>
 </html>
