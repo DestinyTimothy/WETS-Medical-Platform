@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vital Signs Monitoring - WETS</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="vitals.css">
 </head>
 <body>
-    <!-- Top Header Bar -->
     <header class="top-header">
         <div class="welcome-section">
             <h1 class="welcome-text">Hello, Dr. Osama 👋</h1>
@@ -21,7 +19,6 @@
         </div>
     </header>
 
-    <!-- Horizontal Tab Navigation -->
     <nav class="tab-navigation">
         <a href="#" class="tab-link active">Vital Signs</a>
         <a href="#" class="tab-link">Raw Data</a>
@@ -31,11 +28,8 @@
         <a href="#" class="tab-link">Sessions</a>
     </nav>
 
-    <!-- Main Dashboard Layout -->
     <div class="dashboard-container">
-        <!-- Left Sidebar -->
         <aside class="left-sidebar">
-            <!-- Patient Profile Card -->
             <div class="patient-card">
                 <div class="patient-header">
                     <div class="patient-avatar">OE</div>
@@ -69,7 +63,6 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="action-buttons">
                 <button class="action-btn" onclick="addConsultation()">+ Add Consultation</button>
                 <button class="action-btn" onclick="addDrugPrescription()">+ Add Drug Prescription</button>
@@ -79,16 +72,14 @@
             </div>
         </aside>
 
-        <!-- Right Main Panel -->
         <main class="main-panel">
-            <!-- Vital Signs Section -->
             <section class="vitals-section">
-                <h3 class="section-title">● VITAL SIGNS MONITORING</h3>
+                <h2 class="section-title">VITAL SIGNS MONITORING</h2>
                 
                 <div class="vitals-grid">
-                    <div class="vital-card vital-active">
+                    <div class="vital-card vital-active vital-card-heartrate">
                         <div class="vital-label">HEART RATE</div>
-                        <div class="vital-value">60</div>
+                        <div class="vital-value" id="vitalsHeartRateDisplay">60</div>
                         <div class="vital-unit">bpm</div>
                     </div>
 
@@ -110,34 +101,82 @@
                         <div class="vital-unit">°C</div>
                     </div>
 
-                    <div class="vital-card">
+                    <div class="vital-card vital-card-spo2">
                         <div class="vital-label">SPO2</div>
-                        <div class="vital-value">95</div>
+                        <div class="vital-value" id="vitalsSpO2Display">95</div>
                         <div class="vital-unit">%</div>
                     </div>
                 </div>
             </section>
 
-            <!-- ECG Waveform Section -->
-            <section class="ecg-section">
-                <div class="ecg-header">
-                    <h3 class="ecg-title">ECG WAVEFORM</h3>
-                    <span class="live-indicator">● LIVE</span>
-                </div>
+            <div class="diagnostics-split-wrapper">
+                
+                <section class="ecg-section">
+                    <div class="ecg-header">
+                        <h3 class="ecg-title">ECG WAVEFORM STREAM</h3>
+                        <span class="live-indicator">● LIVE</span>
+                    </div>
 
-                <div class="ecg-canvas">
-                    <canvas id="ecgWaveform"></canvas>
-                </div>
+                    <div class="ecg-canvas">
+                        <canvas id="vitalsMiniWaveform"></canvas>
+                    </div>
 
-                <div class="ecg-controls">
-                    <button class="ecg-btn ecg-btn-load" onclick="loadECG()">Load</button>
-                    <button class="ecg-btn ecg-btn-save" onclick="saveECG()">Save</button>
-                    <button class="ecg-btn ecg-btn-pause" onclick="pauseECG()">Pause</button>
-                    <button class="ecg-btn ecg-btn-stop" onclick="stopECG()">Stop</button>
-                    <button class="ecg-btn ecg-btn-udp" onclick="toggleUDP()">UDP</button>
-                    <button class="ecg-btn ecg-btn-connect" onclick="navigateTo('monitoring.html')">Connect</button>
-                </div>
-            </section>
+                    <div class="ecg-controls">
+                        <button class="ecg-btn ecg-btn-load" onclick="loadECG()">Load</button>
+                        <button class="ecg-btn ecg-btn-save" onclick="saveECG()">Save</button>
+                        <button class="ecg-btn ecg-btn-pause" onclick="pauseECG()">Pause</button>
+                        <button class="ecg-btn ecg-btn-stop" onclick="stopECG()">Stop</button>
+                        <button class="ecg-btn ecg-btn-udp" onclick="toggleUDP()">UDP</button>
+                        <button class="ecg-btn ecg-btn-connect" onclick="navigateTo('monitoring.html')">Connect</button>
+                    </div>
+                </section>
+
+                <section class="ai-classification-panel">
+                    <div class="ai-panel-header">
+                        <h3 class="ai-panel-title">7-CLASS CARDIAC MULTI-VERIFICATION</h3>
+                        <div class="ai-engine-status">Active Pipeline</div>
+                    </div>
+                    
+                    <div class="disease-classes-list" id="aiClassificationContainer">
+                        <div class="disease-row-item dynamic-status-inactive" id="class-row-NORM">
+                            <span class="disease-tag tag-code-norm">NORM</span>
+                            <span class="disease-name-label">Normal Sinus Rhythm</span>
+                            <span class="row-status-text">Standby</span>
+                        </div>
+                        <div class="disease-row-item dynamic-status-inactive" id="class-row-STACH">
+                            <span class="disease-tag tag-code-stach">STACH</span>
+                            <span class="disease-name-label">Sinus Tachycardia</span>
+                            <span class="row-status-text">Standby</span>
+                        </div>
+                        <div class="disease-row-item dynamic-status-inactive" id="class-row-SBRAD">
+                            <span class="disease-tag tag-code-sbrad">SBRAD</span>
+                            <span class="disease-name-label">Sinus Bradycardia</span>
+                            <span class="row-status-text">Standby</span>
+                        </div>
+                        <div class="disease-row-item dynamic-status-inactive" id="class-row-MI">
+                            <span class="disease-tag tag-code-mi">MI</span>
+                            <span class="disease-name-label">Myocardial Infarction (Heart Attack)</span>
+                            <span class="row-status-text">Standby</span>
+                        </div>
+                        <div class="disease-row-item dynamic-status-inactive" id="class-row-CD">
+                            <span class="disease-tag tag-code-cd">CD</span>
+                            <span class="disease-name-label">Conduction Disorder / Block</span>
+                            <span class="row-status-text">Standby</span>
+                        </div>
+                        <div class="disease-row-item dynamic-status-inactive" id="class-row-AFIB">
+                            <span class="disease-tag tag-code-afib">AFIB</span>
+                            <span class="disease-name-label">Atrial Fibrillation</span>
+                            <span class="row-status-text">Standby</span>
+                        </div>
+                        <div class="disease-row-item dynamic-status-inactive" id="class-row-PVC">
+                            <span class="disease-tag tag-code-pvc">PVC</span>
+                            <span class="disease-name-label">Premature Ventricular Contractions</span>
+                            <span class="row-status-text">Standby</span>
+                        </div>
+                    </div>
+                </section>
+                
+            </div>
         </main>
     </div>
 

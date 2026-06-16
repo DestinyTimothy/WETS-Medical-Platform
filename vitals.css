@@ -10,7 +10,9 @@
     --accent-blue: #0c4381;
     --clinical-green: #10b981;
     --clinical-red: #dc2626;
+    --clinical-orange: #f97316;
     --bg-main: #f4f7fa;
+    --dark-canvas: #040d1a;
 }
 
 body {
@@ -74,7 +76,6 @@ body {
 .metric-emergency { background-color: #fee2e2; color: #991b1b; }
 .metric-notifications { background-color: #fef3c7; color: #92400e; }
 
-/* Horizontal Tab Navigation */
 .tab-navigation {
     display: flex;
     gap: 1.5rem;
@@ -86,7 +87,7 @@ body {
 }
 
 .tab-navigation::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for a clean UI matrix */
+    display: none;
 }
 
 .tab-link {
@@ -110,7 +111,7 @@ body {
 }
 
 /* ==========================================================================
-   Dashboard Main Layout Structure
+   Dashboard Layout Structure
    ========================================================================== */
 
 .dashboard-container {
@@ -123,10 +124,6 @@ body {
     box-sizing: border-box;
 }
 
-/* ==========================================================================
-   Left Patient Demographics Sidebar
-   ========================================================================== */
-
 .left-sidebar {
     display: flex;
     flex-direction: column;
@@ -136,9 +133,9 @@ body {
 .patient-card {
     background-color: var(--bg-white);
     border-radius: 12px;
-    overflow: hidden;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border-gray);
+    overflow: hidden;
 }
 
 .patient-header {
@@ -202,15 +199,9 @@ body {
     font-weight: 600; 
 }
 
-.status-active { 
-    color: #059669; 
-}
+.status-active { color: #059669; }
+.blood-type { color: var(--clinical-red); }
 
-.blood-type { 
-    color: var(--clinical-red); 
-}
-
-/* Interaction Controls Grid */
 .action-buttons {
     display: flex;
     flex-direction: column;
@@ -235,18 +226,13 @@ body {
     transform: translateX(3px);
 }
 
-/* ==========================================================================
-   Right Diagnostics Panel Architecture
-   ========================================================================== */
-
 .main-panel {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    min-width: 0; /* Clear grid constraints */
+    min-width: 0;
 }
 
-/* Numerical Vital Matrix Block */
 .vitals-section {
     background-color: var(--bg-white);
     border-radius: 12px;
@@ -261,9 +247,6 @@ body {
     color: var(--text-muted);
     letter-spacing: 0.5px;
     margin: 0 0 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
 .vitals-grid {
@@ -281,11 +264,6 @@ body {
     transition: all 0.2s ease;
 }
 
-.vital-card:hover {
-    border-color: #cbd5e1;
-    background-color: #f1f5f9;
-}
-
 .vital-active {
     background-color: #eff6ff;
     border-color: #3b82f6;
@@ -295,7 +273,6 @@ body {
     font-size: 0.7rem;
     font-weight: 700;
     color: var(--text-muted);
-    letter-spacing: 0.5px;
     margin-bottom: 0.5rem;
 }
 
@@ -304,7 +281,6 @@ body {
     font-weight: 700;
     color: var(--accent-blue);
     line-height: 1;
-    margin-bottom: 0.15rem;
 }
 
 .vital-unit { 
@@ -314,25 +290,33 @@ body {
 }
 
 /* ==========================================================================
-   ECG Waveform & Machine Learning Interface Block
+   Split Segment Panel: ECG Waveform + 7-Class AI Matrix Layout
    ========================================================================== */
 
-.ecg-section {
+.diagnostics-split-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 1.5rem;
+}
+
+.ecg-section, .ai-classification-panel {
     background-color: var(--bg-white);
     border-radius: 12px;
     padding: 1.25rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border-gray);
+    display: flex;
+    flex-direction: column;
 }
 
-.ecg-header {
+.ecg-header, .ai-panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
 }
 
-.ecg-title {
+.ecg-title, .ai-panel-title {
     font-size: 0.8rem;
     font-weight: 700;
     color: var(--text-muted);
@@ -347,41 +331,22 @@ body {
     animation: pulse 2s ease-in-out infinite;
 }
 
-@keyframes pulse { 
-    0%, 100% { opacity: 1; } 
-    50% { opacity: 0.4; } 
-}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-/* Matrix Context Window Wrap */
 .ecg-canvas {
-    background-color: #040d1a;
+    background-color: var(--dark-canvas);
     border-radius: 8px;
     padding: 0.5rem;
     margin-bottom: 1rem;
-    position: relative;
     overflow: hidden;
 }
 
-#ecgWaveform {
+#vitalsMiniWaveform {
     width: 100%;
-    height: 320px;
+    height: 300px;
     display: block;
 }
 
-/* Deep Learning Module Visual Layer Placeholder */
-.ecg-canvas::after {
-    content: "INTELLIGENT PREDICTIVE ML ENGINE DISCONNECTED — STANDBY MODE";
-    position: absolute;
-    bottom: 1rem;
-    left: 1.5rem;
-    color: rgba(16, 185, 129, 0.35);
-    font-family: monospace;
-    font-size: 0.7rem;
-    letter-spacing: 1px;
-    pointer-events: none;
-}
-
-/* Hardware Control Bus */
 .ecg-controls {
     display: flex;
     gap: 0.5rem;
@@ -389,65 +354,112 @@ body {
 }
 
 .ecg-btn {
-    flex: 1 1 100px;
-    padding: 0.75rem 1rem;
+    flex: 1 1 80px;
+    padding: 0.65rem;
     border-radius: 6px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
     border: 1px solid var(--border-gray);
-    text-align: center;
+    background-color: white;
 }
 
 .ecg-btn-load { background-color: #10559d; color: white; border: none; }
-.ecg-btn-load:hover { background-color: #0d4580; }
-.ecg-btn-save, .ecg-btn-pause, .ecg-btn-udp, .ecg-btn-connect { background-color: white; color: var(--text-dark); }
-.ecg-btn-save:hover, .ecg-btn-pause:hover, .ecg-btn-udp:hover, .ecg-btn-connect:hover { background-color: #f8fafc; border-color: #94a3b8; }
-.ecg-btn-stop { background-color: white; color: var(--clinical-red); border-color: #fca5a5; }
-.ecg-btn-stop:hover { background-color: #fef2f2; border-color: var(--clinical-red); }
+.ecg-btn-stop { color: var(--clinical-red); border-color: #fca5a5; }
 
 /* ==========================================================================
-   Fluid Breakpoint Intersections System
+   Modern 7-Class AI Real-time Triage Item List
    ========================================================================== */
 
+.ai-engine-status {
+    font-size: 0.75rem;
+    background-color: #f1f5f9;
+    color: var(--accent-blue);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+.disease-classes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.disease-row-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.disease-tag {
+    font-family: monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    width: 50px;
+    text-align: center;
+}
+
+.disease-name-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    flex-grow: 1;
+}
+
+.row-status-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Dynamic Classes Controlled by vitals.js Engine */
+.dynamic-status-inactive {
+    background-color: #fafafa;
+    border-color: #f1f5f9;
+    opacity: 0.45;
+}
+
+.dynamic-status-inactive .disease-tag { background-color: #e2e8f0; color: #475569; }
+.dynamic-status-inactive .disease-name-label { color: #94a3b8; }
+.dynamic-status-inactive .row-status-text { color: #cbd5e1; }
+
+/* Active State Styles */
+.dynamic-status-active-alert {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
+    transform: scale(1.02);
+}
+.dynamic-status-active-alert .disease-tag { background-color: #fee2e2; color: var(--clinical-red); }
+.dynamic-status-active-alert .disease-name-label { color: #991b1b; font-weight: 700; }
+.dynamic-status-active-alert .row-status-text { color: var(--clinical-red); font-weight: 700; animation: pulse 1.5s infinite; }
+
+/* Healthy State Styles */
+.dynamic-status-active-healthy {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+    transform: scale(1.02);
+}
+.dynamic-status-active-healthy .disease-tag { background-color: #d1fae5; color: #166534; }
+.dynamic-status-active-healthy .disease-name-label { color: #14532d; font-weight: 700; }
+.dynamic-status-active-healthy .row-status-text { color: #166534; font-weight: 700; }
+
+/* Color mappings for individual labels */
+.tag-code-norm { border-left: 4px solid var(--clinical-green); }
+.tag-code-stach, .tag-code-sbrad, .tag-code-afib { border-left: 4px solid var(--clinical-orange); }
+.tag-code-mi, .tag-code-cd, .tag-code-pvc { border-left: 4px solid var(--clinical-red); }
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .diagnostics-split-wrapper { grid-template-columns: 1fr; }
+}
 @media (max-width: 1024px) {
-    .dashboard-container { 
-        grid-template-columns: 1fr; 
-        padding: 1.25rem 1rem; 
-    }
-    .action-buttons { 
-        flex-direction: row; 
-        flex-wrap: wrap; 
-    }
-    .action-btn { 
-        flex: 1 1 200px; 
-        text-align: center; 
-    }
-}
-
-@media (max-width: 768px) {
-    .top-header { 
-        padding: 1rem; 
-        flex-direction: column; 
-        align-items: flex-start; 
-    }
-    .tab-navigation { 
-        padding: 0 1rem; 
-    }
-    #ecgWaveform { 
-        height: 260px; 
-    }
-}
-
-@media (max-width: 480px) {
-    .vitals-grid { 
-        grid-template-columns: 1fr; 
-    }
-    .action-btn { 
-        flex: 1 1 100%; 
-    }
-    .ecg-btn { 
-        flex: 1 1 45%; 
-    }
+    .dashboard-container { grid-template-columns: 1fr; }
 }
