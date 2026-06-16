@@ -16,21 +16,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 1. Define the PTB-XL Real-World Disease Reference Map
+# 1. Aligned 7-Class Production Target Mapping Reference Grid
 DISEASE_CLASSES = {
-    0: {"code": "NORM", "name": "Normal Cardiac Profile"},
-    1: {"code": "MI", "name": "Myocardial Infarction (Heart Attack)"},
-    2: {"code": "STTC", "name": "ST/T Changes (Ischemia/Oxygen Starvation)"},
-    3: {"code": "CD", "name": "Conduction Disturbance (Electrical Block)"},
-    4: {"code": "HYP", "name": "Hypertrophy (Muscle Wall Thickening)"}
-}
-
-ARRHYTHMIA_TYPES = {
-    0: "Normal Rhythm",
-    1: "Atrial Fibrillation (AFib)",
-    2: "Sinus Bradycardia (SBRAD)",
-    3: "Sinus Tachycardia (STACH)",
-    4: "General Arrhythmia / Anomaly"
+    0: {"code": "NORM", "name": "Normal Sinus Rhythm"},
+    1: {"code": "STACH", "name": "Sinus Tachycardia"},
+    2: {"code": "SBRAD", "name": "Sinus Bradycardia"},
+    3: {"code": "MI", "name": "Myocardial Infarction (Heart Attack)"},
+    4: {"code": "CD", "name": "Conduction Disorder / Block"},
+    5: {"code": "AFIB", "name": "Atrial Fibrillation"},
+    6: {"code": "PVC", "name": "Premature Ventricular Contractions"}
 }
 
 # 2. Incoming Data Structural Blueprint
@@ -62,29 +56,38 @@ class TriageInferenceEngine:
             raise ValueError("Telemetry data contains invalid structural characters.")
 
     def run_inference(self, signal_tensor):
-        # Simulating model forward pass execution weights matrix
-        # Returns disease probabilities, rhythm labels, SpO2 levels, and severity score
-        mock_weights = np.random.dirichlet(np.ones(5))[0]
+        # Simulating modern 7-class distribution probabilities array weight matrices
+        mock_weights = np.random.dirichlet(np.ones(7))[0]
         predicted_class_idx = int(np.argmax(mock_weights))
-        predicted_rhythm_idx = int(np.random.choice([0, 1, 2, 3, 4], p=[0.6, 0.1, 0.1, 0.1, 0.1]))
         
-        calculated_spo2 = float(np.random.uniform(94.0, 99.5) if predicted_rhythm_idx == 0 else np.random.uniform(88.0, 93.0))
-        calculated_hr = int(np.random.randint(60, 90) if predicted_rhythm_idx == 0 else (np.random.randint(40, 49) if predicted_rhythm_idx == 2 else np.random.randint(125, 160)))
-        severity_score = float(np.max(mock_weights) if predicted_class_idx != 0 else np.random.uniform(0.0, 0.35))
+        # Sync calculated hardware vital metrics dynamically based on target structural diagnostic paths
+        if predicted_class_idx == 0:  # NORM
+            calculated_hr = int(np.random.randint(65, 85))
+            calculated_spo2 = float(np.random.uniform(96.5, 99.5))
+        elif predicted_class_idx == 1:  # STACH
+            calculated_hr = int(np.random.randint(110, 150))
+            calculated_spo2 = float(np.random.uniform(93.0, 96.0))
+        elif predicted_class_idx == 2:  # SBRAD
+            calculated_hr = int(np.random.randint(42, 54))
+            calculated_spo2 = float(np.random.uniform(94.0, 97.0))
+        else:  # Pathological signatures (MI, CD, AFIB, PVC)
+            calculated_hr = int(np.random.randint(55, 115))
+            calculated_spo2 = float(np.random.uniform(88.0, 93.5))
 
-        return predicted_class_idx, predicted_rhythm_idx, calculated_hr, calculated_spo2, severity_score
+        severity_score = float(np.max(mock_weights) if predicted_class_idx != 0 else np.random.uniform(0.0, 0.25))
+
+        return predicted_class_idx, calculated_hr, calculated_spo2, severity_score
 
 engine = TriageInferenceEngine()
 
-# 4. The Telemetry Post API Route
-@app.post("/api/telemetry/analyze")
-async def analyze_telemetry(payload: TelemetryPayload):
+# 4. Corrected Telemetry Post API Route to match vitals.js fetch path exactly
+@app.post("/api/vitals/analyze")
+async def analyze_vitals(payload: TelemetryPayload):
     try:
         signal_tensor = engine.process_signal(payload.signal_string)
-        class_idx, rhythm_idx, hr, spo2, severity = engine.run_inference(signal_tensor)
+        class_idx, hr, spo2, severity = engine.run_inference(signal_tensor)
         
         disease = DISEASE_CLASSES[class_idx]
-        rhythm = ARRHYTHMIA_TYPES[rhythm_idx]
         
         return {
             "status": "success",
@@ -96,8 +99,7 @@ async def analyze_telemetry(payload: TelemetryPayload):
             },
             "diagnosis": {
                 "class_code": disease["code"],
-                "class_name": disease["name"],
-                "rhythm_classification": rhythm
+                "rhythm_classification": disease["name"]
             }
         }
     except Exception as e:
@@ -105,4 +107,5 @@ async def analyze_telemetry(payload: TelemetryPayload):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    # Initialized string app route matching with hot reload enabled for clean active local iterations
+    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)

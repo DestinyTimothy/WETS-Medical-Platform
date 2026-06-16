@@ -1,247 +1,227 @@
-/**
- * WETS - Vitals Dashboard Core Processing Engine & AI Mediator
- * Fully Integrated Canvas Animation Loop and FastAPI Handshake Pipeline
- */
+/* ==========================================================================
+   WETS - Advanced Real-Time Telemetry & AI Classification Pipeline Engine
+   ========================================================================== */
 
-// Architectural Real-world Cardiac Shapes Matrix (Look-Up Tables)
+// 1. Core State Configuration Matrix
+let isWaveformRunning = true;
+let canvas, ctx;
+let animationFrameId;
+let currentRhythmMode = "NORM";
+let globalDataBufferIndex = 0;
+
+// 2. 7-Class Signal Mapping Registry (Mathematical Rhythm Representations)
 const CARDIO_SHAPES_REGISTRY = {
-    "NORM": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.05, 0.1, 0.15, 0.1, 0.05, 0, 0, 0, 0, 0, -0.1, 0.2, 1.2, -0.4, 0, 0, 0, 0, 0, 0, 0.1, 0.2, 0.25, 0.2, 0.1, 0, 0, 0, 0, 0], 
-    "STACH": [0, 0, 0.1, 1.3, -0.5, 0, 0.3, 0, 0], // Compressed time-domain (Fast Heartbeat)
-    "SBRAD": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.05, 0.1, 1.1, -0.3, 0, 0.2, 0, 0, 0, 0, 0, 0, 0, 0], // Extended resting line (Slow Heartbeat)
-    "MI": [0, 0, 0, 0.05, 0.1, 1.0, 0.6, 0.5, 0.4, 0.2, 0, 0, 0], // Elevated ST-Segment (Heart Attack signature)
-    "CD": [0, 0, 0.05, 0.05, 0.0, 1.1, -0.4, 0, 0, 0.1, 0, 0, 0] // Widened, notched QRS layout (Electrical block)
+    "NORM":  [0, 0, 0, 0, 0, 0.02, 0.05, 0.1, 0.15, 0.1, 0.05, 0, -0.05, 0.2, 1.2, -0.4, 0, 0.1, 0.2, 0.3, 0.2, 0.1, 0, 0, 0, 0],
+    "STACH": [0, 0, 0.1, 0.2, 1.3, -0.5, 0, 0.3, 0.4, 0.2, 0, 0, 0.1, 0.2, 1.3, -0.5, 0, 0.3, 0.4, 0.2, 0],
+    "SBRAD": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.05, 0.1, 1.1, -0.3, 0, 0.2, 0.3, 0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "MI":    [0, 0, 0, 0, 0.05, 0.1, 1.0, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0, 0, 0, 0, 0.05, 0.1, 1.0, 0.7, 0.6, 0.5],
+    "CD":    [0, 0, 0.05, 0.05, 0, 1.1, -0.4, 0, 0.1, 0, 0, 0, 0, 0.05, 0.05, 0, 1.1, -0.4, 0, 0.1, 0, 0, 0, 0],
+    "AFIB":  [0, 0.1, -0.1, 0.15, -0.05, 0.2, 0.9, -0.3, 0.1, -0.1, 0.2, -0.1, 0.05, -0.1, 0.1, 0.8, -0.2, 0.15, -0.05],
+    "PVC":   [0, 0, 0, 0.1, 1.4, -0.8, -0.4, -0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 1.4, -0.8, -0.4, -0.1, 0, 0, 0, 0, 0]
 };
 
-// Canvas and Animation Architecture Variables
-let ecgCanvas;
-let ecgCtx;
-let ecgAnimationId;
-let ecgData = [];
-let shapeIndex = 0;
-let ecgRunning = true;
-let ecgPaused = false;
+// Mock string matching the format expected by Python backend processing
+const hardwareTelemetryMockStream = "0.0, 0.0, 0.05, 0.1, 1.2, -0.4, 0.0, 0.2, 0.0";
 
-// Default visual profile tracking state
-let currentActiveShape = CARDIO_SHAPES_REGISTRY["NORM"];
-let vitalsAIIntervalId = null; 
-
-// Initializer: Fires automatically when DOM loading completes
-document.addEventListener('DOMContentLoaded', function() {
-    ecgCanvas = document.getElementById('vitalsMiniWaveform') || document.getElementById('ecgMonitoringWaveform');
-    
-    if (ecgCanvas) {
-        ecgCtx = ecgCanvas.getContext('2d');
-        
-        // Formulate layout mapping sizes
-        resizeVitalsCanvas();
-        window.addEventListener('resize', resizeVitalsCanvas);
-        
-        // Cold start animation cycle
-        startVitalsECG();
-    }
-    
-    // Cold start standalone test run configuration for profile testing
-    initializeVitalsAIProcessing("Osama Elnahas");
+/* ==========================================================================
+   Initialization Gateways
+   ========================================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+    initializeECGCanvas();
+    startTelemetryPipelineLoop();
 });
 
-function resizeVitalsCanvas() {
-    if (!ecgCanvas) return;
-    const container = ecgCanvas.parentElement;
-    ecgCanvas.width = container.clientWidth;
-    ecgCanvas.height = 220; // Specialized baseline height matrix optimized for dashboard layout slots
-}
-
-/**
- * Appends transformed data calculations into the active runtime graphics array
- */
-function generateNextVitalsPoint() {
-    if (!ecgCanvas) return;
-
-    // Route points dynamically based on the active disease shape selected by the AI payload
-    let nextValue = currentActiveShape[shapeIndex];
+// Canvas Context Workspace Setup
+function initializeECGCanvas() {
+    canvas = document.getElementById("vitalsMiniWaveform");
+    if (!canvas) return;
     
-    shapeIndex++;
-    if (shapeIndex >= currentActiveShape.length) {
-        shapeIndex = 0; // Wrap tracking registers back to zero smoothly
-    }
+    ctx = canvas.getContext("2d");
     
-    const midPoint = ecgCanvas.height / 2;
-    const amplitudeScale = ecgCanvas.height * 0.35; // Locked 35% height boundary scale factor
-    let yPixelCoordinate = midPoint - (nextValue * amplitudeScale);
+    // Set explicit internal resolution matching actual bounding box sizes
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
     
-    ecgData.push(yPixelCoordinate);
-    
-    // Maintain maximum boundary limits matched step-for-pixel to physical screen width
-    if (ecgData.length > ecgCanvas.width) {
-        ecgData.shift(); // Leftward timeline shift
-    }
-}
-
-/**
- * Core Hardware-Accelerated Animation Loop Control Engine
- */
-function animateVitalsECG() {
-    if (!ecgRunning || ecgPaused) return;
-    
-    generateNextVitalsPoint();
-    drawVitalsScreen();
-    
-    ecgAnimationId = requestAnimationFrame(animateVitalsECG);
-}
-
-function drawVitalsGrid() {
-    ecgCtx.strokeStyle = 'rgba(16, 37, 64, 0.4)';
-    ecgCtx.lineWidth = 1;
-    const gridSpacing = 20;
-    
-    for (let x = 0; x < ecgCanvas.width; x += gridSpacing) {
-        ecgCtx.beginPath(); ecgCtx.moveTo(x, 0); ecgCtx.lineTo(x, ecgCanvas.height); ecgCtx.stroke();
-    }
-    for (let y = 0; y < ecgCanvas.height; y += gridSpacing) {
-        ecgCtx.beginPath(); ecgCtx.moveTo(0, y); ecgCtx.lineTo(ecgCanvas.width, y); ecgCtx.stroke();
-    }
-}
-
-function drawVitalsScreen() {
-    // Reset background canvas buffer box frame
-    ecgCtx.fillStyle = '#040d1a';
-    ecgCtx.fillRect(0, 0, ecgCanvas.width, ecgCanvas.height);
-    
-    drawVitalsGrid();
-    
-    // Graphic stroke configuration layout parameters
-    ecgCtx.strokeStyle = '#10b981'; // Healthcare Neon Green track line
-    ecgCtx.lineWidth = 2.2;
-    ecgCtx.lineJoin = 'round';
-    ecgCtx.beginPath();
-    
-    for (let i = 0; i < ecgData.length; i++) {
-        if (i === 0) ecgCtx.moveTo(i, ecgData[i]);
-        else ecgCtx.lineTo(i, ecgData[i]);
-    }
-    ecgCtx.stroke();
-}
-
-function startVitalsECG() {
-    ecgRunning = true;
-    ecgPaused = false;
-    ecgData = [];
-    shapeIndex = 0;
-    
-    if (ecgCanvas) {
-        const midPoint = ecgCanvas.height / 2;
-        // Prefill trace data list matrix to stop trace lag glitches on initialization 
-        for (let i = 0; i < ecgCanvas.width; i++) {
-            ecgData.push(midPoint);
-        }
-    }
-    animateVitalsECG();
+    // Start drawing loop frame cycle
+    renderWaveformCycle();
 }
 
 /* ==========================================================================
-   WETS Interface Pipeline Extensions - FastAPI Core Server Connections
+   The Continuous Canvas Drawing Loop
    ========================================================================== */
+function renderWaveformCycle() {
+    if (!isWaveformRunning) return;
 
-/**
- * Initializes the recurring background synchronization loops
- */
-function initializeVitalsAIProcessing(patientId) {
-    if (vitalsAIIntervalId) clearInterval(vitalsAIIntervalId);
+    // Get active wave configuration data based on system diagnosis state
+    const targetPattern = CARDIO_SHAPES_REGISTRY[currentRhythmMode] || CARDIO_SHAPES_REGISTRY["NORM"];
+    
+    // Shift canvas pixel layout left by 2 pixels to animate rolling effect
+    let imageData = ctx.getImageData(2, 0, canvas.width - 2, canvas.height);
+    ctx.putImageData(imageData, 0, 0);
+    
+    // Clear the tiny trailing edge slice to keep rendering crisp
+    ctx.fillStyle = "#040d1a"; // Deep matching slate canvas variable
+    ctx.fillRect(canvas.width - 2, 0, 2, canvas.height);
+    
+    // Draw grid lines on trailing edge slice to map telemetry matrix layout
+    ctx.strokeStyle = "rgba(16, 185, 129, 0.04)";
+    if (Math.floor(Date.now() / 20) % 10 === 0) {
+        ctx.beginPath();
+        ctx.moveTo(canvas.width - 2, 0);
+        ctx.lineTo(canvas.width - 2, canvas.height);
+        ctx.stroke();
+    }
 
-    // Mock representation string of raw file inputs streaming across data parameters
-    const hardwareTelemetryMockStream = "0.0, 0.0, 0.05, 0.1, 1.2, -0.4, 0.0, 0.2, 0.0";
-
-    // Immediate first execution fetch
-    requestVitalsDiagnosticAnalysis(patientId, hardwareTelemetryMockStream);
-
-    // Poll the FastAPI model every 4 seconds
-    vitalsAIIntervalId = setInterval(() => {
-        if (ecgRunning && !ecgPaused) {
-            requestVitalsDiagnosticAnalysis(patientId, hardwareTelemetryMockStream);
-        }
-    }, 4000);
+    // Capture precise baseline value heights
+    const centerY = canvas.height / 2;
+    const valueIndex = globalDataBufferIndex % targetPattern.length;
+    const rawSignalValue = targetPattern[valueIndex];
+    
+    // Scale current vector point onto visual pixel grid heights
+    const mappedY = centerY - (rawSignalValue * (canvas.height * 0.35));
+    
+    // Draw pixel segment line matching modern neon glow themes
+    ctx.strokeStyle = currentRhythmMode === "NORM" ? "#10b981" : "#dc2626"; // Green for safe, Red for warning signatures
+    ctx.lineWidth = 2.5;
+    ctx.shadowBlur = 4;
+    ctx.shadowColor = ctx.strokeStyle;
+    
+    ctx.beginPath();
+    ctx.moveTo(canvas.width - 3, centerY); // Simple vector path connection anchor
+    ctx.lineTo(canvas.width - 1, mappedY);
+    ctx.stroke();
+    
+    // Reset shadow matrices so background rendering optimization stays high
+    ctx.shadowBlur = 0;
+    
+    globalDataBufferIndex++;
+    animationFrameId = requestAnimationFrame(renderWaveformCycle);
 }
 
-/**
- * Posts active tracking parameters over network fetch requests to Python
- */
-async function requestVitalsDiagnosticAnalysis(patientId, rawTelemetryString) {
-    const targetEndpoint = "http://127.0.0.1:8000/api/telemetry/analyze";
+/* ==========================================================================
+   Asynchronous Backend AI Communication Layer
+   ========================================================================== */
+function startTelemetryPipelineLoop() {
+    // Fire immediate execution check, then lock tracking to a solid 4-second update cycle
+    fetchAIDiagnosticPacket();
+    setInterval(fetchAIDiagnosticPacket, 4000);
+}
 
+async function fetchAIDiagnosticPacket() {
     try {
-        const response = await fetch(targetEndpoint, {
+        const payload = {
+            patient_id: "MRN_08050852601333",
+            signal_string: hardwareTelemetryMockStream
+        };
+
+        const response = await fetch("http://127.0.0.1:8000/api/vitals/analyze", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ patient_id: patientId, signal_string: rawTelemetryString })
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
-        if (!response.ok) throw new Error("Vitals interface handshake route error.");
-        const clinicalPackage = await response.json();
+        if (!response.ok) throw new Error("Network pipe responded with rejection status code");
+        
+        const data = await response.json();
+        
+        // Push the data out to live DOM node update engines
+        updateNumericalCards(data.metrics);
+        renderWETSAIDiagnosticClassification(data.diagnosis);
 
-        if (clinicalPackage.status === "success") {
-            renderAICardiacProfileMetrics(clinicalPackage);
-        }
-    } catch (netError) {
-        console.error("Vitals AI Synchronization Stream Interrupted:", netError);
+    } catch (error) {
+        console.warn("Telemetry connection standby mode. Local baseline fallback active. Detail: ", error.message);
+        // Fallback safety baseline if backend server is cycling or offline
+        const fallbackDiagnosis = { class_code: "NORM", rhythm_classification: "Normal Sinus Rhythm" };
+        renderWETSAIDiagnosticClassification(fallbackDiagnosis);
     }
 }
 
-/**
- * Alters DOM element inner text data nodes dynamically from AI predictions
- */
-function renderAICardiacProfileMetrics(aiData) {
-    // 1. Locate and alter numerical dashboard card displays
-    const bpmElement = document.querySelector('.vital-card-heartrate .vital-value') || document.getElementById('vitalsHeartRateDisplay');
-    const spo2Element = document.querySelector('.vital-card-spo2 .vital-value') || document.getElementById('vitalsSpO2Display');
+/* ==========================================================================
+   UI DOM Element Modifiers (Lighting Up the Triage Screen)
+   ========================================================================== */
+function updateNumericalCards(metrics) {
+    if (!metrics) return;
     
-    if (bpmElement) bpmElement.textContent = aiData.metrics.heart_rate;
-    if (spo2Element) spo2Element.textContent = Math.round(aiData.metrics.spo2) + "%";
-
-    // 2. Locate or dynamically insert the specialized clinical assessment badge inside sidebar
-    let aiBadgeNode = document.getElementById('wetsVitalsAIBadge');
+    const hrDisplay = document.getElementById("vitalsHeartRateDisplay");
+    const spo2Display = document.getElementById("vitalsSpO2Display");
     
-    if (!aiBadgeNode) {
-        const targetSidebarContainer = document.querySelector('.patient-card') || document.querySelector('.sidebar') || document.querySelector('.left-column');
-        if (targetSidebarContainer) {
-            aiBadgeNode = document.createElement('div');
-            aiBadgeNode.id = 'wetsVitalsAIBadge';
-            aiBadgeNode.style.marginTop = '20px';
-            aiBadgeNode.style.paddingTop = '15px';
-            aiBadgeNode.style.borderTop = '1px solid rgba(255,255,255,0.1)';
-            targetSidebarContainer.appendChild(aiBadgeNode);
-        }
-    }
-
-    if (aiBadgeNode) {
-        const code = aiData.diagnosis.class_code;
-        const rhythm = aiData.diagnosis.rhythm_classification;
-
-        let trackingColorClass = "diag-norm";
-        if (code === "MI") trackingColorClass = "diag-mi";
-        else if (code === "STTC" || code === "CD") trackingColorClass = "diag-warn";
-
-        aiBadgeNode.innerHTML = `
-            <div style="font-size: 0.7rem; text-transform: uppercase; color: #8a99ad; margin-bottom: 6px; font-weight: 700; letter-spacing: 0.5px;">WETS AI Diagnostic Classification</div>
-            <span class="status-badge ${trackingColorClass}" style="display: block; text-align: center; box-sizing: border-box; width: 100%;">
-                ● ${rhythm} [${code}]
-            </span>
-        `;
-    }
-
-    // 3. Update active trace shape configuration structure instantly for the next frame
-    const verifiedCode = aiData.diagnosis.class_code;
-    if (CARDIO_SHAPES_REGISTRY[verifiedCode]) {
-        currentActiveShape = CARDIO_SHAPES_REGISTRY[verifiedCode];
-    }
+    if (hrDisplay && metrics.heart_rate) hrDisplay.innerText = Math.round(metrics.heart_rate);
+    if (spo2Display && metrics.spo2) spo2Display.innerText = Math.round(metrics.spo2);
 }
 
 /**
- * Controller intersection hook mapping patient click actions from directory screens
+ * Sweeps through the 7-class triage list, resets previous markers,
+ * and flashes the target classification with high-contrast alert or healthy styles.
  */
-function viewPatientVitalsFolder(selectedPatientName) {
-    const patientField = document.getElementById('patientProfileNameField') || document.querySelector('.patient-info h2');
-    if (patientField) patientField.textContent = selectedPatientName;
+function renderWETSAIDiagnosticClassification(diagnosis) {
+    if (!diagnosis || !diagnosis.class_code) return;
     
-    // Kickstart tracking engine loop for the newly targeted patient profile
-    initializeVitalsAIProcessing(selectedPatientName);
+    const targetCode = diagnosis.class_code.toUpperCase(); // e.g., NORM, MI, AFIB
+    
+    // Update active loop tracker variable so the canvas instantly swaps its rhythm signature shape
+    if (CARDIO_SHAPES_REGISTRY[targetCode]) {
+        currentRhythmMode = targetCode;
+    }
+
+    // 1. Loop through all 7 rows and reset them completely back to default standby mode
+    document.querySelectorAll('.disease-row-item').forEach(row => {
+        row.className = "disease-row-item dynamic-status-inactive";
+        
+        const statusTextNode = row.querySelector('.row-status-text');
+        if (statusTextNode) statusTextNode.innerText = "Standby";
+    });
+
+    // 2. Identify the target diagnostic component container row matching the active code
+    const targetActiveRow = document.getElementById(`class-row-${targetCode}`);
+    if (targetActiveRow) {
+        const statusTextNode = targetActiveRow.querySelector('.row-status-text');
+        
+        if (targetCode === "NORM") {
+            // Apply premium safe/healthy styling overrides
+            targetActiveRow.className = "disease-row-item dynamic-status-active-healthy";
+            if (statusTextNode) statusTextNode.innerText = "Active Trace";
+        } else {
+            // Apply premium glowing high-contrast critical triage alert styling overrides
+            targetActiveRow.className = "disease-row-item dynamic-status-active-alert";
+            if (statusTextNode) statusTextNode.innerText = "CRITICAL TRACE";
+        }
+    }
+}
+
+/* ==========================================================================
+   Hardware Functional Control Button Stubs
+   ========================================================================== */
+function loadECG() { console.log("Restoring archived telemetry configuration files..."); }
+function saveECG() { console.log("Exporting active baseline trace metrics to system logs..."); }
+
+function pauseECG() {
+    isWaveformRunning = !isWaveformRunning;
+    if (isWaveformRunning) {
+        renderWaveformCycle();
+        console.log("Telemetry animation track resumed.");
+    } else {
+        cancelAnimationFrame(animationFrameId);
+        console.log("Telemetry animation track frozen.");
+    }
+}
+
+function stopECG() {
+    isWaveformRunning = false;
+    cancelAnimationFrame(animationFrameId);
+    if (ctx && canvas) {
+        ctx.fillStyle = "#040d1a";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    console.log("System telemetry pipeline stream terminated.");
+}
+
+function toggleUDP() { console.log("Cycling target hardware communication sockets..."); }
+function addConsultation() { console.log("Opening consultation entry module..."); }
+function addDrugPrescription() { console.log("Opening prescription matrix panel..."); }
+function showPersonalInfo() { console.log("Opening personal detail context window..."); }
+
+function navigateTo(targetUrl) {
+    window.location.href = targetUrl;
 }
